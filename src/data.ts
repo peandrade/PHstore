@@ -4,5 +4,11 @@ export const data = {
         { img: '/assets/banners/banner-2.png', link: '', alt: 'Promoção Banner 2' },
         { img: '/assets/banners/banner-3.png', link: '', alt: 'Promoção Banner 3' },
         { img: '/assets/banners/banner-4.png', link: '', alt: 'Promoção Banner 4' },
+    ],
+    products: [
+        { id: 1, label: 'Camisa PHP', price: 49.90, image: '/assets/products/camiseta-php.png', liked: false },
+        { id: 2, label: 'Camisa Laravel', price: 39.90, image: '/assets/products/camiseta-laravel-branca.png', liked: false },
+        { id: 3, label: 'Camisa Node', price: 29.90, image: '/assets/products/camiseta-node.png', liked: false },
+        { id: 4, label: 'Camisa React', price: 19.90, image: '/assets/products/camiseta-react-azul.png', liked: false },
     ]
 }
