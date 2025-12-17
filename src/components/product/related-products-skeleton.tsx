@@ -1,12 +1,11 @@
-interface ProductListSkeletonProps {
+interface RelatedProductsSkeletonProps {
     count?: number;
 }
 
-export const ProductListSkeleton = ({ count = 4 }: ProductListSkeletonProps) => {
+export const RelatedProductsSkeleton = ({ count = 4 }: RelatedProductsSkeletonProps) => {
     return (
         <div className="mt-10" aria-busy="true" aria-label="Loading products">
             <div className="bg-gray-200 dark:bg-gray-700 rounded w-32 h-8 mb-4 mx-auto md:mx-0 animate-pulse"></div>
-            <div className="bg-gray-200 dark:bg-gray-700 rounded w-64 h-5 mx-auto md:mx-0 animate-pulse"></div>
 
             <div className="mt-9 grid grid-cols-1 md:grid-cols-4 gap-8">
                 {Array.from({ length: count }).map((_, index) => (
