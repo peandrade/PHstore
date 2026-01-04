@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(move \"src\\hooks\\user-querystring.ts\" \"src\\hooks\\use-querystring.ts\")"
+      "Bash(move \"src\\hooks\\user-querystring.ts\" \"src\\hooks\\use-querystring.ts\")",
+      "Bash(git mv:*)"
     ]
   }
 }
