@@ -4,6 +4,7 @@ export type MenuItem = {
 };
 
 export const menuItems: MenuItem[] = [
-  { label: "Camisa", href: "/categories/camisa" },
-  { label: "Kits", href: "/categories/kits" },
+  { label: "Camisas", href: "/categories/camisas" },
+  { label: "Bonés", href: "/categories/bones" },
+  { label: "Kits", href: "/kits" },
 ];

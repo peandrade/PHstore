@@ -1,21 +1,30 @@
-import { data } from "@/data";
+import { getRelatedProducts } from "@/libs/api";
 import { ProductList } from "../product-list";
 
 type Props = {
-    id: number;
-}
+  id: number;
+};
 
-export const RelatedProducts = ({ id }: Props) => {
-    const relatedProducts = data.products
-        .filter(product => product.id !== id)
-        .slice(0, 4);
+export async function RelatedProducts({ id }: Props) {
+  let products = [];
 
-    return (
-        <div className="mt-10">
-            <h3 className="text-2xl">Você também vai gostar</h3>
-            <div className="mt-9">
-                <ProductList list={relatedProducts}/>
-            </div>
-        </div>
-    )
+  try {
+    products = await getRelatedProducts(id, 4);
+  } catch (error) {
+    console.error("Erro ao carregar produtos relacionados:", error);
+    return null;
+  }
+
+  if (products.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="mt-10">
+      <h3 className="text-2xl">Você também vai gostar</h3>
+      <div className="mt-9">
+        <ProductList list={products} />
+      </div>
+    </div>
+  );
 }
