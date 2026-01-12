@@ -54,7 +54,7 @@ export const CartProductItem = ({ item }: Props) => {
     }
   return (
     <div className={`flex items-center p-6 gap-4 md:gap-8 border-b border-gray-200 ${isUpdating ? 'opacity-60' : ''}`}>
-      <div className="border border-gray-200 p-1">
+      <div className="p-1">
         <Image
           src={item.product.image}
           alt={item.product.label}

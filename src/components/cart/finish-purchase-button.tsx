@@ -15,26 +15,30 @@ export const FinishPurchaseButton = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const isLoggedIn = typeof token === "string" && token.length > 0;
+
   const handleFinishButton = async () => {
-    if (!token || !cartStore.selectedAddressId) return;
+    if (!isLoggedIn || !cartStore.selectedAddressId) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
-      const sessionUrl = await finishCart(
-        token,
+      const response = await finishCart(
+        token as string,
         cartStore.selectedAddressId,
         cartStore.cart
       );
-      if (sessionUrl) {
+
+      if (response.success && response.checkoutUrl) {
         await clearCartCookie();
         cartStore.clearCart();
-        router.push(sessionUrl);
+        router.push(response.checkoutUrl);
       } else {
-        setError("Ocorreu um erro ao finalizar a compra. Tente novamente.");
+        setError(response.error || "Ocorreu um erro ao finalizar a compra. Tente novamente.");
       }
     } catch (err) {
+      console.error("Erro ao finalizar:", err);
       setError("Ocorreu um erro ao finalizar a compra. Tente novamente.");
     } finally {
       setIsLoading(false);
@@ -43,7 +47,7 @@ export const FinishPurchaseButton = () => {
 
   if (!hydrated) return null;
 
-  if (!token) {
+  if (!isLoggedIn) {
     return (
       <Link
         href={"/login"}

@@ -8,6 +8,7 @@ import { ShippingBoxLogged } from "./shipping-box-logged";
 export const ShippingBox = () => {
   const { token, hydrated } = useAuthStore((state) => state);
   const cartStore = useCartStore((state) => state);
+  const isLoggedIn = typeof token === "string" && token.length > 0;
 
   if (!hydrated) return null;
 
@@ -15,8 +16,8 @@ export const ShippingBox = () => {
     <div className="flex flex-col gap-4">
       <div className="text-gray-500">Calcular frete e prazo</div>
       <div>
-        {!token && <ShippingBoxNotLogged />}
-        {token && <ShippingBoxLogged />}
+        {!isLoggedIn && <ShippingBoxNotLogged />}
+        {isLoggedIn && <ShippingBoxLogged />}
       </div>
       {cartStore.shippingDays > 0 && (
         <div className="flex items-center bg-white border border-gray-200 rounded-sm p-6">

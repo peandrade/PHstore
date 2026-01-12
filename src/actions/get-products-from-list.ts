@@ -1,7 +1,40 @@
-"use server"
+"use server";
 
-import { data } from "@/data"
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-export const getProductsFromList = async (ids: (string | number)[]) => {
-    return data.products;
-}
+type ProductFromList = {
+  id: number;
+  label: string;
+  price: number;
+  image: string | null;
+};
+
+export const getProductsFromList = async (
+  ids: (string | number)[]
+): Promise<ProductFromList[]> => {
+  if (ids.length === 0) return [];
+
+  try {
+    const response = await fetch(`${API_URL}/products`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      console.error("Erro ao buscar produtos:", response.status);
+      return [];
+    }
+
+    const data = await response.json();
+    const allProducts: ProductFromList[] = data.products;
+
+    const numericIds = ids.map((id) => Number(id));
+    const filteredProducts = allProducts.filter((product) =>
+      numericIds.includes(product.id)
+    );
+
+    return filteredProducts;
+  } catch (error) {
+    console.error("Erro ao buscar produtos do carrinho:", error);
+    return [];
+  }
+};

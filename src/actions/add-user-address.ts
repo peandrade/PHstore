@@ -1,15 +1,52 @@
-"use server"
+"use server";
 
-import { data } from "@/data"
-import { Address } from "@/types/address"
+import { Address } from "@/types/address";
 
-export const addUserAddress = async (token: string, address: Address) => {
-    const newId = data.addresses.length > 0
-        ? Math.max(...data.addresses.map(a => a.id || 0)) + 1
-        : 1;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-    const newAddress = { ...address, id: newId };
-    data.addresses.push(newAddress);
+type AddAddressResponse = {
+  success: boolean;
+  error?: string;
+  address?: Address;
+  addresses?: Address[];
+};
 
-    return data.addresses;
-}
+export const addUserAddress = async (
+  token: string,
+  address: Omit<Address, "id">
+): Promise<AddAddressResponse> => {
+  if (!token) {
+    return { success: false, error: "Usuário não autenticado" };
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/user/addresses`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(address),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data.error || data.message || "Erro ao adicionar endereço",
+      };
+    }
+
+    return {
+      success: true,
+      address: data.address,
+    };
+  } catch (error) {
+    console.error("Erro ao adicionar endereço:", error);
+    return {
+      success: false,
+      error: "Erro ao conectar com o servidor",
+    };
+  }
+};
