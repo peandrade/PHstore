@@ -1,7 +1,9 @@
+// src/app/(site)/kits/[slug]/page.tsx
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getKitBySlug } from "@/libs/api";
+import { AddKitToCartButton } from "@/components/kits/add-kit-to-cart-button";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -17,6 +19,14 @@ export default async function KitPage({ params }: Props) {
   }
 
   const savings = kit.originalPrice - kit.price;
+
+  // Prepara os produtos para o botão de adicionar ao carrinho
+  const productsForCart = kit.products.map((product) => ({
+    id: product.id,
+    label: product.label,
+    quantity: product.quantity,
+    price: product.price,
+  }));
 
   return (
     <div>
@@ -34,11 +44,15 @@ export default async function KitPage({ params }: Props) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div className="bg-gray-50 rounded-lg p-6">
-          <div className={`grid gap-4 ${
-            kit.products.length === 1 ? "grid-cols-1" :
-            kit.products.length === 2 ? "grid-cols-2" :
-            "grid-cols-2"
-          }`}>
+          <div
+            className={`grid gap-4 ${
+              kit.products.length === 1
+                ? "grid-cols-1"
+                : kit.products.length === 2
+                ? "grid-cols-2"
+                : "grid-cols-2"
+            }`}
+          >
             {kit.products.map((product) => (
               <div
                 key={product.id}
@@ -87,9 +101,16 @@ export default async function KitPage({ params }: Props) {
             </div>
           </div>
 
-          <button className="w-full py-4 px-8 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors mb-6">
-            Adicionar Kit ao Carrinho
-          </button>
+          <AddKitToCartButton
+            kitId={kit.id}
+            kitSlug={kit.slug}
+            kitLabel={kit.label}
+            kitPrice={kit.price}
+            kitOriginalPrice={kit.originalPrice}
+            products={productsForCart}
+            className="w-full py-4 px-8 text-lg mb-6"
+            showIcon
+          />
 
           <div className="border-t pt-6">
             <h3 className="text-lg font-semibold mb-4">
@@ -117,15 +138,12 @@ export default async function KitPage({ params }: Props) {
                       {product.label}
                     </div>
                     <div className="text-sm text-gray-500">
-                      {product.label}
+                      Quantidade: {product.quantity}
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="text-gray-400 line-through text-sm">
                       R$ {product.price.toFixed(2)}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      Qtd: {product.quantity}
                     </div>
                   </div>
                 </div>

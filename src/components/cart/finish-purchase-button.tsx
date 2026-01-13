@@ -17,6 +17,8 @@ export const FinishPurchaseButton = () => {
 
   const isLoggedIn = typeof token === "string" && token.length > 0;
 
+  const hasItems = cartStore.cart.length > 0 || cartStore.kits.length > 0;
+
   const handleFinishButton = async () => {
     if (!isLoggedIn || !cartStore.selectedAddressId) return;
 
@@ -27,7 +29,8 @@ export const FinishPurchaseButton = () => {
       const response = await finishCart(
         token as string,
         cartStore.selectedAddressId,
-        cartStore.cart
+        cartStore.cart,
+        cartStore.kits
       );
 
       if (response.success && response.checkoutUrl) {
@@ -35,7 +38,9 @@ export const FinishPurchaseButton = () => {
         cartStore.clearCart();
         router.push(response.checkoutUrl);
       } else {
-        setError(response.error || "Ocorreu um erro ao finalizar a compra. Tente novamente.");
+        setError(
+          response.error || "Ocorreu um erro ao finalizar a compra. Tente novamente."
+        );
       }
     } catch (err) {
       console.error("Erro ao finalizar:", err);
@@ -66,7 +71,7 @@ export const FinishPurchaseButton = () => {
         </div>
       )}
       <button
-        disabled={!cartStore.selectedAddressId || isLoading}
+        disabled={!cartStore.selectedAddressId || isLoading || !hasItems}
         onClick={handleFinishButton}
         className="w-full text-center px-6 py-5 bg-blue-600 text-white border-0 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
       >
