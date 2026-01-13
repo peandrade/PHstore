@@ -7,6 +7,15 @@ type ProductFromList = {
   label: string;
   price: number;
   image: string | null;
+  liked: boolean;
+};
+
+type ProductApiResponse = {
+  id: number;
+  label: string;
+  price: number;
+  image: string | null;
+  liked?: boolean;
 };
 
 export const getProductsFromList = async (
@@ -25,12 +34,18 @@ export const getProductsFromList = async (
     }
 
     const data = await response.json();
-    const allProducts: ProductFromList[] = data.products;
+    const allProducts = data.products as ProductApiResponse[];
 
     const numericIds = ids.map((id) => Number(id));
-    const filteredProducts = allProducts.filter((product) =>
-      numericIds.includes(product.id)
-    );
+    const filteredProducts = allProducts
+      .filter((product) => numericIds.includes(product.id))
+      .map((product) => ({
+        id: product.id,
+        label: product.label,
+        price: product.price,
+        image: product.image,
+        liked: product.liked ?? false,
+      }));
 
     return filteredProducts;
   } catch (error) {
