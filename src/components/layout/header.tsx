@@ -1,3 +1,4 @@
+// src/components/header/header.tsx
 "use client";
 
 import Image from "next/image";
@@ -7,6 +8,8 @@ import { HeaderIcon } from "./header-icon";
 import { MobileMenuButton, MobileMenuItems } from "./mobile-menu";
 import { HeaderSearch } from "./header-search";
 import { menuItems } from "./menu-config";
+import { HeaderUserMenu } from "../header/header-user-menu";
+import { HeaderCartIcon } from "../header/header-cart-icon";
 
 export function Header() {
   const [menuOpened, setMenuOpened] = useState(false);
@@ -46,15 +49,8 @@ export function Header() {
             <HeaderSearch />
           </div>
           <div className="flex gap-4">
-            <Link href={"/my-orders"}>
-              <HeaderIcon src="/assets/ui/user-line.png" alt="Perfil" />
-            </Link>
-            <Link href={"/cart"}>
-              <HeaderIcon
-                src="/assets/ui/shopping-bag-4-line.png"
-                alt="Carrinho"
-              />
-            </Link>
+            <HeaderUserMenu />
+            <HeaderCartIcon />
             <MobileMenuButton
               menuOpened={menuOpened}
               setMenuOpened={setMenuOpened}
