@@ -3,6 +3,7 @@
 
 import { useAuthStore } from "@/store/auth";
 import { useCartStore } from "@/store/cart";
+import { useLikesStore } from "@/store/likes";
 import { clearAuthCookie } from "@/actions/clear-auth-cookie";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
@@ -12,6 +13,7 @@ export const HeaderUserMenu = () => {
   const router = useRouter();
   const { token, hydrated, clearToken } = useAuthStore((state) => state);
   const clearCart = useCartStore((state) => state.clearCart);
+  const clearLikes = useLikesStore((state) => state.clearLikes);
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -33,6 +35,7 @@ export const HeaderUserMenu = () => {
     await clearAuthCookie();
     clearToken();
     clearCart();
+    clearLikes();
     setIsOpen(false);
     router.push("/");
   };
