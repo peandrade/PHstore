@@ -3,6 +3,8 @@ import { getServerAuthToken } from "@/libs/server-cookies";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
+import { RefundButton } from "@/components/order/refund-button";
+import { RetryPaymentButton } from "@/components/order/retry-payment-button";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -42,6 +44,8 @@ export default async function OrderDetailPage({ params }: Props) {
         return "bg-yellow-100 text-yellow-800";
       case "cancelled":
         return "bg-red-100 text-red-800";
+      case "refunded":
+        return "bg-purple-100 text-purple-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -57,6 +61,8 @@ export default async function OrderDetailPage({ params }: Props) {
         return "Pendente";
       case "cancelled":
         return "Cancelado";
+      case "refunded":
+        return "Reembolsado";
       default:
         return status || "Processando";
     }
@@ -106,6 +112,62 @@ export default async function OrderDetailPage({ params }: Props) {
           Realizado em {formatDate(order.createdAt)}
         </p>
       </div>
+
+      {/* Aviso de Pagamento Pendente */}
+      {order.status === "pending" && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+          <div className="flex gap-3">
+            <svg
+              className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <div className="text-sm text-yellow-800">
+              <p className="font-medium mb-1">Pagamento Pendente</p>
+              <p>
+                Este pedido está aguardando o pagamento. Clique no botão abaixo
+                para continuar com o pagamento.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Aviso de Reembolso */}
+      {order.status === "refunded" && (
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
+          <div className="flex gap-3">
+            <svg
+              className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+              />
+            </svg>
+            <div className="text-sm text-purple-800">
+              <p className="font-medium mb-1">Pedido Reembolsado</p>
+              <p>
+                O valor deste pedido foi estornado. O reembolso pode levar até 7
+                dias úteis para aparecer no seu método de pagamento original.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Produtos */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
@@ -165,8 +227,22 @@ export default async function OrderDetailPage({ params }: Props) {
           </div>
           <div className="flex justify-between font-bold text-lg text-gray-900 pt-3 border-t border-gray-200">
             <span>Total</span>
-            <span className="text-blue-600">R$ {order.total.toFixed(2)}</span>
+            <span
+              className={
+                order.status === "refunded"
+                  ? "text-purple-600 line-through"
+                  : "text-blue-600"
+              }
+            >
+              R$ {order.total.toFixed(2)}
+            </span>
           </div>
+          {order.status === "refunded" && (
+            <div className="flex justify-between text-sm text-purple-600">
+              <span>Valor reembolsado</span>
+              <span>R$ {order.total.toFixed(2)}</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -204,7 +280,7 @@ export default async function OrderDetailPage({ params }: Props) {
           </p>
           <p>CEP: {order.address.zipcode}</p>
         </div>
-        {order.shippingDays && (
+        {order.shippingDays && order.status !== "refunded" && (
           <p className="mt-4 text-sm text-green-600 font-medium">
             📦 Previsão de entrega: até {order.shippingDays} dias úteis
           </p>
@@ -213,6 +289,8 @@ export default async function OrderDetailPage({ params }: Props) {
 
       {/* Botões */}
       <div className="flex flex-col sm:flex-row gap-4">
+        <RetryPaymentButton orderId={order.id} status={order.status} />
+        <RefundButton orderId={order.id} status={order.status} />
         <Link
           href="/my-orders"
           className="flex-1 px-6 py-3 border border-gray-300 text-center rounded-lg font-medium hover:bg-gray-50 transition-colors"

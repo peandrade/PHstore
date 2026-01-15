@@ -70,7 +70,7 @@ export const LoginForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white border border-gray-200 p-8 rounded-sm"
+      className="w-full max-w-md mx-auto bg-white border border-gray-200 p-8 rounded-sm"
     >
       <h2 className="text-xl font-bold mb-4">Login</h2>
       <div className="mb-4">
@@ -115,7 +115,12 @@ export const LoginForm = () => {
 
       <div className="text-center mt-4">
         <Link href={"/register"} className="text-gray-500 text-sm">
-          Ainda não tem conta? Se cadastre!
+          Ainda não tem conta? <a
+              href="/register"
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
+              Se cadastre
+            </a>
         </Link>
       </div>
     </form>
