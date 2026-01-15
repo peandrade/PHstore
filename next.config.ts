@@ -10,11 +10,6 @@ const nextConfig: NextConfig = {
         port: "4000", // Porta do backend em desenvolvimento
         pathname: "/media/**", // Caminho das imagens
       },
-      {
-        protocol: "https",
-        hostname: "api.b7store.com", // Seu domínio de produção
-        pathname: "/media/**",
-      },
       // Adicione aqui o domínio do backend em produção quando tiver
       // {
       //   protocol: "https",

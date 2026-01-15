@@ -1,16 +1,18 @@
-// src/components/product/product-item.tsx
+// src/components/product-item.tsx
 "use client";
 
 import { Product } from "@/types/product";
 import Image from "next/image";
 import Link from "next/link";
 import { LikeButton } from "./product/like-button";
+import { AddProductToCartButton } from "./product/add-product-to-cart-button";
 
 type Props = {
   data: Product;
+  showCartButton?: boolean;
 };
 
-export const ProductItem = ({ data }: Props) => {
+export const ProductItem = ({ data, showCartButton = true }: Props) => {
   const link = `/product/${data.id}`;
 
   return (
@@ -52,6 +54,17 @@ export const ProductItem = ({ data }: Props) => {
         </div>
 
         <div className="mt-1 text-xs text-gray-400">Em até 12x no cartão</div>
+
+        {showCartButton && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <AddProductToCartButton
+              productId={data.id}
+              productLabel={data.label}
+              className="w-full py-2 px-4 text-sm"
+              showIcon
+            />
+          </div>
+        )}
       </div>
     </div>
   );
