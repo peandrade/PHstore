@@ -30,6 +30,8 @@ export default async function MyOrdersPage() {
         return "bg-yellow-100 text-yellow-800";
       case "cancelled":
         return "bg-red-100 text-red-800";
+      case "refunded":
+        return "bg-purple-100 text-purple-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -45,6 +47,8 @@ export default async function MyOrdersPage() {
         return "Pendente";
       case "cancelled":
         return "Cancelado";
+      case "refunded":
+        return "Reembolsado";
       default:
         return status || "Processando";
     }
@@ -96,7 +100,13 @@ export default async function MyOrdersPage() {
                 <div className="flex items-center gap-4 sm:gap-8">
                   <div className="text-left sm:text-right">
                     <p className="text-sm text-gray-500">Total</p>
-                    <p className="font-semibold text-gray-900">
+                    <p
+                      className={`font-semibold ${
+                        order.status === "refunded"
+                          ? "text-purple-600 line-through"
+                          : "text-gray-900"
+                      }`}
+                    >
                       R$ {order.total.toFixed(2)}
                     </p>
                   </div>
