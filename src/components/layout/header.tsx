@@ -1,4 +1,3 @@
-// src/components/header/header.tsx
 "use client";
 
 import Image from "next/image";
@@ -10,16 +9,14 @@ import { HeaderSearch } from "./header-search";
 import { menuItems } from "./menu-config";
 import { HeaderUserMenu } from "../header/header-user-menu";
 import { HeaderCartIcon } from "../header/header-cart-icon";
+import { PromoBanner } from "./promo-banner";
 
 export function Header() {
   const [menuOpened, setMenuOpened] = useState(false);
 
   return (
     <header className="bg-white border-b border-gray-200">
-      <div className="bg-black text-white text-center p-5">
-        <strong>FRETE GRÁTIS</strong> para todo o Nordeste nas compras acima de
-        R$ 199,00. <strong>APROVEITA!</strong>
-      </div>
+      <PromoBanner />
       <div className="w-full max-w-6xl mx-auto p-5">
         <div className="flex items-center justify-between gap-4">
           <div className="w-32">

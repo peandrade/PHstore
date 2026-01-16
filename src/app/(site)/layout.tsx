@@ -10,7 +10,7 @@ export default function SiteLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <StoreHydration />
       <Header />
       <main className="w-full max-w-6xl mx-auto p-6">{children}</main>
