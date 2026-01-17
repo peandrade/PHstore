@@ -1,4 +1,3 @@
-// src/actions/get-user-likes.ts
 "use server";
 
 import { authenticatedFetch } from "@/libs/authenticated-fetch";

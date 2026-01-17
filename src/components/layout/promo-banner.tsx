@@ -106,7 +106,6 @@ export function PromoBanner() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background pattern */}
       <div className="absolute inset-0 opacity-10">
         <div
           className="absolute inset-0"
@@ -116,9 +115,7 @@ export function PromoBanner() {
         />
       </div>
 
-      {/* Conteúdo */}
       <div className="relative flex items-center justify-center py-3 px-4">
-        {/* Seta esquerda */}
         <button
           onClick={() => goToMessage((currentIndex - 1 + promoMessages.length) % promoMessages.length)}
           className="absolute left-2 md:left-4 p-1 text-white/60 hover:text-white transition-colors"
@@ -129,7 +126,6 @@ export function PromoBanner() {
           </svg>
         </button>
 
-        {/* Mensagem */}
         <div
           className={`
             flex items-center justify-center gap-2 text-sm md:text-base text-center
@@ -150,7 +146,6 @@ export function PromoBanner() {
           </span>
         </div>
 
-        {/* Seta direita */}
         <button
           onClick={() => goToMessage((currentIndex + 1) % promoMessages.length)}
           className="absolute right-2 md:right-4 p-1 text-white/60 hover:text-white transition-colors"
@@ -162,7 +157,6 @@ export function PromoBanner() {
         </button>
       </div>
 
-      {/* Indicadores */}
       <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-1.5">
         {promoMessages.map((message, index) => (
           <button
@@ -177,7 +171,6 @@ export function PromoBanner() {
         ))}
       </div>
 
-      {/* Barra de progresso */}
       <div className="absolute bottom-0 left-0 h-0.5 bg-yellow-400/80 transition-all duration-100"
         style={{
           width: isPaused ? `${((currentIndex + 1) / promoMessages.length) * 100}%` : undefined,

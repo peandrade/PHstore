@@ -104,8 +104,8 @@ export async function getProduct(id: number): Promise<ProductWithCategory | null
     price: data.product.price,
     description: data.product.description,
     liked: false,
-    images: data.product.images.length > 0 
-      ? data.product.images 
+    images: data.product.images.length > 0
+      ? data.product.images
       : [PLACEHOLDER_IMAGE],
   };
 
@@ -257,7 +257,6 @@ export type KitDetail = Kit & {
   })[];
 };
 
-// ============ FUNÇÕES DE KIT ============
 export async function getKits(params?: {
   limit?: number;
   orderBy?: "price" | "discount" | "newest";

@@ -58,9 +58,7 @@ export const OrderSuccessContent = ({ order }: Props) => {
         </p>
       </div>
 
-      {/* Card do Pedido */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
-        {/* Header do Card */}
         <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
@@ -82,7 +80,6 @@ export const OrderSuccessContent = ({ order }: Props) => {
           </div>
         </div>
 
-        {/* Produtos */}
         <div className="p-6">
           <h3 className="font-semibold text-gray-900 mb-4">
             Itens do Pedido ({order.products?.length || 0})
@@ -131,7 +128,6 @@ export const OrderSuccessContent = ({ order }: Props) => {
           </div>
         </div>
 
-        {/* Resumo de Valores */}
         <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
           <div className="space-y-2">
             <div className="flex justify-between text-gray-600">
@@ -152,7 +148,6 @@ export const OrderSuccessContent = ({ order }: Props) => {
         </div>
       </div>
 
-      {/* Informações de Entrega */}
       <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <svg
@@ -195,12 +190,10 @@ export const OrderSuccessContent = ({ order }: Props) => {
         )}
       </div>
 
-      {/* Data do Pedido */}
       <div className="text-center text-gray-500 text-sm mb-8">
         Pedido realizado em {formatDate(order.createdAt)}
       </div>
 
-      {/* Botões de Ação */}
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Link
           href="/my-orders"

@@ -1,4 +1,3 @@
-// src/components/product/like-button.tsx
 "use client";
 
 import { toggleLike } from "@/actions/toggle-like";
@@ -28,11 +27,8 @@ export const LikeButton = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const isLoggedIn = authHydrated && typeof token === "string" && token.length > 0;
-  
-  // Se não está logado, nunca mostra como liked
-  // Se está logado e o store está hidratado, usa o store
-  // Se está logado mas store não hidratou, usa initialLiked
-  const liked = isLoggedIn 
+
+  const liked = isLoggedIn
     ? (likesHydrated ? isLiked(productId) : initialLiked)
     : false;
 
@@ -61,7 +57,6 @@ export const LikeButton = ({
 
     setIsLoading(true);
 
-    // Atualização otimista
     if (liked) {
       removeLike(productId);
     } else {
@@ -72,7 +67,6 @@ export const LikeButton = ({
       const response = await toggleLike(productId);
 
       if (!response.success) {
-        // Reverte em caso de erro
         if (liked) {
           addLike(productId);
         } else {
@@ -81,7 +75,6 @@ export const LikeButton = ({
         console.error(response.error);
       }
     } catch (error) {
-      // Reverte em caso de erro
       if (liked) {
         addLike(productId);
       } else {
@@ -110,7 +103,7 @@ export const LikeButton = ({
       className={`
         ${sizeClasses[size]}
         ${variant === "button" ? "border border-gray-200 bg-white hover:bg-gray-50 rounded-sm" : ""}
-        flex justify-center items-center 
+        flex justify-center items-center
         hover:scale-110 transition-all duration-200
         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
         disabled:opacity-50 disabled:cursor-not-allowed

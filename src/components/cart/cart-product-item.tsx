@@ -1,4 +1,3 @@
-// src/components/cart/cart-product-item.tsx
 "use client";
 
 import { CartListItem } from "@/types/cart-list-item";
@@ -45,7 +44,6 @@ export const CartProductItem = ({ item }: Props) => {
       }`}
     >
       <div className="flex items-start gap-4">
-        {/* Imagem do Produto */}
         <div className="relative w-20 h-20 bg-gray-50 rounded-lg flex-shrink-0 overflow-hidden">
           {item.product.image ? (
             <Image
@@ -62,7 +60,6 @@ export const CartProductItem = ({ item }: Props) => {
           )}
         </div>
 
-        {/* Info do Produto */}
         <div className="flex-1">
           <Link
             href={`/product/${item.product.id}`}
@@ -73,7 +70,6 @@ export const CartProductItem = ({ item }: Props) => {
 
           <div className="text-sm text-gray-500 mb-3">COD: {item.product.id}</div>
 
-          {/* Preço unitário */}
           <div className="flex items-center gap-2 text-sm">
             <span className="font-semibold text-blue-600">
               {formatPrice(item.product.price)}
@@ -82,9 +78,7 @@ export const CartProductItem = ({ item }: Props) => {
           </div>
         </div>
 
-        {/* Controles de quantidade */}
         <div className="flex flex-col items-end gap-3">
-          {/* Quantidade */}
           <div className="flex items-center border border-gray-200 rounded">
             <button
               onClick={handleMinus}
@@ -105,14 +99,12 @@ export const CartProductItem = ({ item }: Props) => {
             </button>
           </div>
 
-          {/* Preço total */}
           <div className="text-right">
             <div className="text-xl font-bold text-blue-600">
               {formatPrice(totalPrice)}
             </div>
           </div>
 
-          {/* Botão remover */}
           <button
             onClick={handleRemove}
             disabled={isUpdating}

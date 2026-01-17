@@ -1,8 +1,3 @@
-/**
- * Order status helper functions
- * Provides consistent status colors and labels across the application
- */
-
 export type OrderStatus = "paid" | "completed" | "pending" | "cancelled" | "refunded";
 
 export type StatusConfig = {
@@ -38,31 +33,16 @@ const defaultStatus: StatusConfig = {
   label: "Desconhecido",
 };
 
-/**
- * Get the Tailwind CSS classes for order status badge background and text color
- * @param status - Order status string
- * @returns Tailwind CSS classes (e.g., "bg-green-100 text-green-800")
- */
 export function getStatusColor(status: string): string {
   const normalizedStatus = status?.toLowerCase();
   return statusConfig[normalizedStatus]?.color || defaultStatus.color;
 }
 
-/**
- * Get the human-readable label for order status
- * @param status - Order status string
- * @returns Status label in Portuguese (e.g., "Pago", "Pendente")
- */
 export function getStatusLabel(status: string): string {
   const normalizedStatus = status?.toLowerCase();
   return statusConfig[normalizedStatus]?.label || defaultStatus.label;
 }
 
-/**
- * Get both color and label for order status
- * @param status - Order status string
- * @returns Object containing color classes and label
- */
 export function getStatusConfig(status: string): StatusConfig {
   const normalizedStatus = status?.toLowerCase();
   return statusConfig[normalizedStatus] || defaultStatus;

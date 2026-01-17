@@ -1,4 +1,3 @@
-// src/components/product-item.tsx
 "use client";
 
 import { Product } from "@/types/product";

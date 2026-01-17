@@ -1,4 +1,3 @@
-// src/app/(site)/search/page.tsx
 import { searchProducts } from "@/actions/search";
 import Link from "next/link";
 import { ProductItem } from "@/components/product-item";
@@ -37,7 +36,6 @@ export default async function SearchPage({ searchParams }: Props) {
 
   return (
     <div>
-      {/* Header da busca */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
           Resultados para &quot;{query}&quot;
@@ -73,7 +71,6 @@ export default async function SearchPage({ searchParams }: Props) {
         </div>
       ) : (
         <div className="space-y-12">
-          {/* Kits */}
           {kits.length > 0 && (
             <section>
               <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -90,7 +87,6 @@ export default async function SearchPage({ searchParams }: Props) {
             </section>
           )}
 
-          {/* Produtos */}
           {products.length > 0 && (
             <section>
               <h2 className="text-lg font-semibold text-gray-800 mb-4">

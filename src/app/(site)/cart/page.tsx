@@ -1,4 +1,3 @@
-// src/app/(site)/cart/page.tsx
 import { getCartState } from "@/actions/get-cart-state";
 import { getProductsFromList } from "@/actions/get-products-from-list";
 import { CartContainer } from "@/components/cart/cart-container";

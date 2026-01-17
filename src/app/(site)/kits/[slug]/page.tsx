@@ -1,4 +1,3 @@
-// src/app/(site)/kits/[slug]/page.tsx
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -21,7 +20,6 @@ export default async function KitPage({ params }: Props) {
 
   const savings = kit.originalPrice - kit.price;
 
-  // Prepara os produtos para o botão de adicionar ao carrinho
   const productsForCart = kit.products.map((product) => ({
     id: product.id,
     label: product.label,

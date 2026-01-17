@@ -73,7 +73,6 @@ export const getOrderBySessionId = async (
   if (!sessionId) return null;
 
   try {
-    // 1. Busca o orderId pela session_id (endpoint público)
     const sessionResponse = await fetch(
       `${API_URL}/orders/session?session_id=${sessionId}`,
       {
@@ -109,7 +108,6 @@ export const getOrderBySessionId = async (
       };
     }
 
-    // 2. Busca os detalhes do pedido (autenticado)
     const result = await authenticatedFetch<ApiOrderResponse>(`/orders/${orderId}`, {
       token,
       cache: "no-store",

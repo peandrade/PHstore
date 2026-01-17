@@ -34,10 +34,8 @@ export const finishCart = async (
     return { success: false, error: "Carrinho vazio" };
   }
 
-  // Combina produtos individuais com produtos dos kits
   const allCartItems: { productId: number; quantity: number }[] = [];
 
-  // Adiciona produtos individuais
   for (const item of cart) {
     allCartItems.push({
       productId: item.productId,
@@ -45,22 +43,17 @@ export const finishCart = async (
     });
   }
 
-  // Adiciona produtos dos kits (considerando quantidade do kit)
   for (const kit of kits) {
     for (const product of kit.products) {
-      // Quantidade total = quantidade do produto no kit * quantidade de kits
       const totalQuantity = product.quantity * kit.quantity;
 
-      // Verifica se o produto já existe no carrinho
       const existingIndex = allCartItems.findIndex(
         (item) => item.productId === product.productId
       );
 
       if (existingIndex > -1) {
-        // Soma a quantidade
         allCartItems[existingIndex].quantity += totalQuantity;
       } else {
-        // Adiciona novo item
         allCartItems.push({
           productId: product.productId,
           quantity: totalQuantity,

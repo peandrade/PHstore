@@ -1,4 +1,3 @@
-// src/components/kits/kit-item.tsx
 "use client";
 
 import { Kit } from "@/libs/api";
@@ -15,7 +14,6 @@ export const KitItem = ({ data }: Props) => {
   const link = `/kits/${data.slug}`;
   const savings = data.originalPrice - data.price;
 
-  // Prepara os produtos para o botão de adicionar ao carrinho
   const productsForCart = data.products.map((product) => ({
     id: product.id,
     label: product.label,

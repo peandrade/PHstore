@@ -1,4 +1,3 @@
-// src/store/cart.ts
 import { CartItem } from "@/types/cart-item";
 import { create } from "zustand";
 
@@ -78,16 +77,14 @@ export const useCartStore = create<CartState>((set) => ({
   addKit: (kit) =>
     set((state) => {
       const existingIndex = state.kits.findIndex((k) => k.kitId === kit.kitId);
-      
+
       if (existingIndex > -1) {
-        // Kit já existe, incrementa quantidade
         const newKits = state.kits.map((k, index) =>
           index === existingIndex ? { ...k, quantity: k.quantity + 1 } : k
         );
         return { kits: newKits };
       }
-      
-      // Kit novo, adiciona com quantidade 1
+
       return { kits: [...state.kits, { ...kit, quantity: 1 }] };
     }),
 
@@ -100,7 +97,6 @@ export const useCartStore = create<CartState>((set) => ({
   updateKitQuantity: (kitId, quantity) =>
     set((state) => {
       if (quantity <= 0) {
-        // Remove se quantidade for 0 ou menos
         return { kits: state.kits.filter((kit) => kit.kitId !== kitId) };
       }
       const newKits = state.kits.map((kit) =>

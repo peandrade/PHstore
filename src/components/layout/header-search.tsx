@@ -1,4 +1,3 @@
-// src/components/header/header-search.tsx
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
@@ -23,7 +22,6 @@ export const HeaderSearch = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { debounce } = useDebounce(TIMING.SEARCH_DEBOUNCE);
 
-  // Fecha ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -38,7 +36,6 @@ export const HeaderSearch = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [close]);
 
-  // Debounced search
   const handleSearch = useCallback(async (searchQuery: string) => {
     if (searchQuery.trim().length < SEARCH.MIN_CHARS) {
       setProducts([]);
@@ -124,7 +121,6 @@ export const HeaderSearch = () => {
         </div>
       </form>
 
-      {/* Dropdown de resultados */}
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-[70vh] overflow-y-auto">
           {isLoading && !hasResults && (
@@ -140,7 +136,6 @@ export const HeaderSearch = () => {
 
           {hasResults && (
             <>
-              {/* Produtos */}
               {products.length > 0 && (
                 <div>
                   <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
@@ -183,7 +178,6 @@ export const HeaderSearch = () => {
                 </div>
               )}
 
-              {/* Kits */}
               {kits.length > 0 && (
                 <div>
                   <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
@@ -236,7 +230,6 @@ export const HeaderSearch = () => {
                 </div>
               )}
 
-              {/* Ver todos os resultados */}
               <Link
                 href={`/search?q=${encodeURIComponent(query)}`}
                 onClick={handleResultClick}

@@ -11,14 +11,6 @@ type AuthFetchResult<T> =
   | { success: true; data: T }
   | { success: false; error: string };
 
-/**
- * Authenticated fetch utility for server actions
- * Handles token retrieval, authorization headers, and error responses
- *
- * @param endpoint - API endpoint (e.g., "/orders" or "/products/123")
- * @param options - Fetch options including method, body, and fallback value
- * @returns Promise with success/error result
- */
 export async function authenticatedFetch<T>(
   endpoint: string,
   options: FetchOptions<T> = {}

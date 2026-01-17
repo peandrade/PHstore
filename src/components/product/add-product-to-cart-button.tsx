@@ -1,4 +1,3 @@
-// src/components/product/add-product-to-cart-button.tsx
 "use client";
 
 import { setCartState } from "@/actions/set-cart-state";
@@ -25,7 +24,6 @@ export const AddProductToCartButton = ({
   const [isAdding, setIsAdding] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Verifica quantidade atual no carrinho
   const productInCart = cartStore.cart.find((p) => p.productId === productId);
   const quantityInCart = productInCart?.quantity || 0;
 
@@ -38,11 +36,9 @@ export const AddProductToCartButton = ({
         quantity: 1,
       });
 
-      // Atualiza o cookie com o novo estado
       const state = useCartStore.getState();
       await setCartState(state.cart, state.kits);
 
-      // Mostra feedback de sucesso
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 2000);
     } catch (error) {

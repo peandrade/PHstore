@@ -1,4 +1,3 @@
-// src/components/cart/cart-container.tsx
 "use client";
 
 import { useCartStore, KitCartItem } from "@/store/cart";
@@ -29,16 +28,13 @@ export const CartContainer = ({
   const shippingCost = useCartStore((state) => state.shippingCost);
   const clearShipping = useCartStore((state) => state.clearShipping);
 
-  // Usa os kits do store, ou os iniciais se o store ainda não foi hidratado
   const currentKits = kits.length > 0 ? kits : initialKits;
 
-  // Calcula subtotal dos kits (preço * quantidade)
   const kitsSubtotal = useMemo(
     () => currentKits.reduce((sum, kit) => sum + kit.kitPrice * kit.quantity, 0),
     [currentKits]
   );
 
-  // Calcula subtotal dos produtos
   const productsSubtotal = useMemo(
     () =>
       initialCartProducts.reduce(
@@ -48,13 +44,10 @@ export const CartContainer = ({
     [initialCartProducts]
   );
 
-  // Subtotal total
   const subtotal = productsSubtotal + kitsSubtotal;
 
-  // Total = subtotal + frete
   const total = subtotal + shippingCost;
 
-  // Conta total de itens
   const totalProductItems = cart.length > 0 ? cart.length : initialCartProducts.length;
   const totalKitItems = currentKits.reduce((sum, kit) => sum + kit.quantity, 0);
   const totalItems = totalProductItems + totalKitItems;
@@ -63,7 +56,6 @@ export const CartContainer = ({
     clearShipping();
   }, [clearShipping]);
 
-  // Verifica se carrinho está vazio
   const isEmpty =
     initialCartProducts.length === 0 && currentKits.length === 0;
 
@@ -88,7 +80,6 @@ export const CartContainer = ({
 
       <div className="flex flex-col md:flex-row gap-8">
         <div className="flex-1">
-          {/* Lista de Kits */}
           {currentKits.length > 0 && (
             <div className="mb-6">
               <h3 className="text-sm font-semibold text-gray-500 uppercase mb-3">
@@ -102,7 +93,6 @@ export const CartContainer = ({
             </div>
           )}
 
-          {/* Lista de Produtos Individuais */}
           {initialCartProducts.length > 0 && (
             <div>
               {currentKits.length > 0 && (

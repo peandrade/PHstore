@@ -1,4 +1,3 @@
-// src/components/cart/cart-product-list.tsx
 import { CartListItem } from "@/types/cart-list-item";
 import { CartProductItem } from "./cart-product-item";
 

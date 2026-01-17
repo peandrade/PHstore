@@ -13,7 +13,6 @@ export const RetryPaymentButton = ({ orderId, status }: Props) => {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  // Só mostra o botão se o status for "pending"
   if (status !== "pending") {
     return null;
   }
@@ -26,7 +25,6 @@ export const RetryPaymentButton = ({ orderId, status }: Props) => {
       if (result.error) {
         setError(result.error);
       } else if (result.paymentUrl) {
-        // Redireciona para a página de pagamento do Stripe
         window.location.href = result.paymentUrl;
       }
     });

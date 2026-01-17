@@ -1,4 +1,3 @@
-// src/actions/search.ts
 "use server";
 
 import { API_URL } from "@/config/api";

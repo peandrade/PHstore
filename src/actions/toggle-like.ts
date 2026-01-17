@@ -1,4 +1,3 @@
-// src/actions/toggle-like.ts
 "use server";
 
 import { authenticatedFetch } from "@/libs/authenticated-fetch";

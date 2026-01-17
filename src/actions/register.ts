@@ -25,7 +25,6 @@ export const register = async ({
   password,
 }: RegisterData): Promise<RegisterResponse> => {
   try {
-    // 1. Primeiro faz o registro
     const registerResponse = await fetch(`${API_URL}/user/register`, {
       method: "POST",
       headers: {

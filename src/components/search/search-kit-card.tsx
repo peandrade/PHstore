@@ -1,4 +1,3 @@
-// src/components/search/search-kit-card.tsx
 "use client";
 
 import { SearchKit } from "@/actions/search";
@@ -14,7 +13,6 @@ type Props = {
 export const SearchKitCard = ({ kit }: Props) => {
   const link = `/kits/${kit.slug}`;
 
-  // Prepara os produtos para o botão de adicionar ao carrinho
   const productsForCart = kit.products.map((product) => ({
     id: product.id,
     label: product.label,
@@ -26,7 +24,6 @@ export const SearchKitCard = ({ kit }: Props) => {
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow group">
       <Link href={link}>
         <div className="relative h-48 bg-gradient-to-br from-blue-50 to-blue-100">
-          {/* Grid de produtos do kit */}
           <div
             className={`grid gap-1 h-full p-3 ${
               kit.products.length === 1
@@ -57,7 +54,6 @@ export const SearchKitCard = ({ kit }: Props) => {
               </div>
             ))}
           </div>
-          {/* Badge de desconto */}
           <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
             -{kit.discount}%
           </div>

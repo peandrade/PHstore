@@ -33,7 +33,6 @@ export default async function OrderDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto py-8">
-      {/* Header */}
       <div className="mb-6">
         <Link
           href="/my-orders"
@@ -71,7 +70,6 @@ export default async function OrderDetailPage({ params }: Props) {
         </p>
       </div>
 
-      {/* Aviso de Pagamento Pendente */}
       {order.status === "pending" && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
           <div className="flex gap-3">
@@ -99,7 +97,6 @@ export default async function OrderDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* Aviso de Reembolso */}
       {order.status === "refunded" && (
         <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
           <div className="flex gap-3">
@@ -127,7 +124,6 @@ export default async function OrderDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* Produtos */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
         <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
           <h2 className="font-semibold text-gray-900">
@@ -171,7 +167,6 @@ export default async function OrderDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Resumo de Valores */}
       <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
         <h2 className="font-semibold text-gray-900 mb-4">Resumo do Pedido</h2>
         <div className="space-y-3">
@@ -204,7 +199,6 @@ export default async function OrderDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Endereço de Entrega */}
       <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
         <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <svg
@@ -245,7 +239,6 @@ export default async function OrderDetailPage({ params }: Props) {
         )}
       </div>
 
-      {/* Botões */}
       <div className="flex flex-col sm:flex-row gap-4">
         <RetryPaymentButton orderId={order.id} status={order.status} />
         <RefundButton orderId={order.id} status={order.status} />

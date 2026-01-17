@@ -1,4 +1,3 @@
-// src/components/cart/cart-kit-item.tsx
 "use client";
 
 import { KitCartItem, useCartStore } from "@/store/cart";
@@ -36,7 +35,6 @@ export const CartKitItem = ({ kit }: Props) => {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4">
       <div className="flex items-start gap-4">
-        {/* Info do Kit */}
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <span className="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">
@@ -46,7 +44,7 @@ export const CartKitItem = ({ kit }: Props) => {
               -{Math.round(((kit.kitOriginalPrice - kit.kitPrice) / kit.kitOriginalPrice) * 100)}%
             </span>
           </div>
-          
+
           <Link
             href={`/kits/${kit.kitSlug}`}
             className="font-semibold text-gray-800 hover:text-blue-600 transition-colors block mb-2"
@@ -54,7 +52,6 @@ export const CartKitItem = ({ kit }: Props) => {
             {kit.kitLabel}
           </Link>
 
-          {/* Produtos inclusos */}
           <div className="text-sm text-gray-500 space-y-1 mb-3">
             {kit.products.map((product) => (
               <div key={product.productId}>
@@ -63,7 +60,6 @@ export const CartKitItem = ({ kit }: Props) => {
             ))}
           </div>
 
-          {/* Preço unitário */}
           <div className="flex items-center gap-2 text-sm">
             <span className="text-gray-400 line-through">
               {formatPrice(kit.kitOriginalPrice)}
@@ -75,9 +71,7 @@ export const CartKitItem = ({ kit }: Props) => {
           </div>
         </div>
 
-        {/* Controles de quantidade */}
         <div className="flex flex-col items-end gap-3">
-          {/* Quantidade */}
           <div className="flex items-center border border-gray-200 rounded">
             <button
               onClick={handleDecrement}
@@ -97,7 +91,6 @@ export const CartKitItem = ({ kit }: Props) => {
             </button>
           </div>
 
-          {/* Preço total */}
           <div className="text-right">
             {kit.quantity > 1 && (
               <div className="text-gray-400 line-through text-sm">
@@ -114,7 +107,6 @@ export const CartKitItem = ({ kit }: Props) => {
             )}
           </div>
 
-          {/* Botão remover */}
           <button
             onClick={handleRemoveKit}
             className="text-gray-400 hover:text-red-500 transition-colors p-1"

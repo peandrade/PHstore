@@ -1,4 +1,3 @@
-// src/components/kits/add-kit-to-cart-button.tsx
 "use client";
 
 import { setCartState } from "@/actions/set-cart-state";
@@ -40,7 +39,6 @@ export const AddKitToCartButton = ({
   const [isAdding, setIsAdding] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Verifica quantidade atual no carrinho
   const kitInCart = cartStore.kits.find((k) => k.kitId === kitId);
   const quantityInCart = kitInCart?.quantity || 0;
 
@@ -61,11 +59,9 @@ export const AddKitToCartButton = ({
         })),
       });
 
-      // Atualiza o cookie com o novo estado
       const state = useCartStore.getState();
       await setCartState(state.cart, state.kits);
 
-      // Mostra feedback de sucesso
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 2000);
     } catch (error) {
