@@ -1,13 +1,13 @@
+import { API_URL } from "@/config/api";
+import { CACHE, IMAGES } from "@/config/constants";
 import { Product, ProductComplete } from "@/types/product";
 import { Banner } from "@/types/banner";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-
-const PLACEHOLDER_IMAGE = "/assets/ui/placeholder.png";
+const PLACEHOLDER_IMAGE = IMAGES.PLACEHOLDER_PATH;
 
 export async function getBanners(): Promise<Banner[]> {
   const response = await fetch(`${API_URL}/banners`, {
-    next: { revalidate: 60 },
+    next: { revalidate: CACHE.REVALIDATE_SECONDS },
   });
 
   if (!response.ok) {
@@ -63,7 +63,7 @@ export async function getProducts(filters?: ProductFilters): Promise<Product[]> 
   const url = `${API_URL}/products${queryString ? `?${queryString}` : ""}`;
 
   const response = await fetch(url, {
-    next: { revalidate: 60 },
+    next: { revalidate: CACHE.REVALIDATE_SECONDS },
   });
 
   if (!response.ok) {
@@ -88,7 +88,7 @@ export type ProductWithCategory = {
 
 export async function getProduct(id: number): Promise<ProductWithCategory | null> {
   const response = await fetch(`${API_URL}/product/${id}`, {
-    next: { revalidate: 60 },
+    next: { revalidate: CACHE.REVALIDATE_SECONDS },
   });
 
   if (!response.ok) {
@@ -121,7 +121,7 @@ export async function getRelatedProducts(
 ): Promise<Product[]> {
   const response = await fetch(
     `${API_URL}/product/${productId}/related?limit=${limit}`,
-    { next: { revalidate: 60 } }
+    { next: { revalidate: CACHE.REVALIDATE_SECONDS } }
   );
 
   if (!response.ok) {
@@ -159,7 +159,7 @@ export async function getCategoryWithMetadata(
   slug: string
 ): Promise<CategoryWithMetadata | null> {
   const response = await fetch(`${API_URL}/category/${slug}/metadata`, {
-    next: { revalidate: 60 },
+    next: { revalidate: CACHE.REVALIDATE_SECONDS },
   });
 
   if (!response.ok) {
@@ -271,7 +271,7 @@ export async function getKits(params?: {
   const url = `${API_URL}/kits${queryString ? `?${queryString}` : ""}`;
 
   const response = await fetch(url, {
-    next: { revalidate: 60 },
+    next: { revalidate: CACHE.REVALIDATE_SECONDS },
   });
 
   if (!response.ok) {
@@ -284,7 +284,7 @@ export async function getKits(params?: {
 
 export async function getKitBySlug(slug: string): Promise<KitDetail | null> {
   const response = await fetch(`${API_URL}/kit/slug/${slug}`, {
-    next: { revalidate: 60 },
+    next: { revalidate: CACHE.REVALIDATE_SECONDS },
   });
 
   if (!response.ok) {
@@ -298,7 +298,7 @@ export async function getKitBySlug(slug: string): Promise<KitDetail | null> {
 
 export async function getKitById(id: number): Promise<KitDetail | null> {
   const response = await fetch(`${API_URL}/kit/${id}`, {
-    next: { revalidate: 60 },
+    next: { revalidate: CACHE.REVALIDATE_SECONDS },
   });
 
   if (!response.ok) {

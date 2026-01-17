@@ -35,7 +35,7 @@ export const ImageSlider = ({ images }: Props) => {
       <div className="mt-8 grid grid-cols-4 gap-6">
         {images.map((image, index) => (
           <div
-            key={index}
+            key={image}
             onClick={() => handleThumbnailClick(index)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             tabIndex={0}

@@ -116,8 +116,9 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
       try {
         await onAdd(form);
         setForm(emptyAddress);
-      } catch (err: any) {
-        setErrors({ submit: err?.message || "Erro ao salvar o endereço" });
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Erro ao salvar o endereço";
+        setErrors({ submit: message });
       }
     });
   };

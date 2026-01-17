@@ -1,36 +1,21 @@
 // src/actions/get-user-likes.ts
 "use server";
 
-import { getServerAuthToken } from "@/libs/server-cookies";
+import { authenticatedFetch } from "@/libs/authenticated-fetch";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+type LikesResponse = {
+  likes: number[];
+};
 
 export const getUserLikes = async (): Promise<number[]> => {
-  try {
-    const token = await getServerAuthToken();
+  const result = await authenticatedFetch<LikesResponse>("/user/likes", {
+    fallbackValue: { likes: [] },
+  });
 
-    if (!token) {
-      return [];
-    }
-
-    const response = await fetch(`${API_URL}/user/likes`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      console.error("Erro ao buscar likes:", response.status);
-      return [];
-    }
-
-    const data = await response.json();
-    return data.likes || [];
-  } catch (error) {
-    console.error("Erro ao buscar likes:", error);
+  if (!result.success) {
+    console.error("Erro ao buscar likes:", result.error);
     return [];
   }
+
+  return result.data.likes || [];
 };

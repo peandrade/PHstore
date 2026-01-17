@@ -1,9 +1,8 @@
 "use server";
 
+import { API_URL } from "@/config/api";
 import { CartItem } from "@/types/cart-item";
 import { KitCartItem } from "@/store/cart";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 type FinishCartResponse = {
   success: boolean;

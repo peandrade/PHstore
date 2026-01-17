@@ -163,9 +163,9 @@ export function PromoBanner() {
 
       {/* Indicadores */}
       <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-1.5">
-        {promoMessages.map((_, index) => (
+        {promoMessages.map((message, index) => (
           <button
-            key={index}
+            key={message.id}
             onClick={() => goToMessage(index)}
             className={`
               h-1 rounded-full transition-all duration-300

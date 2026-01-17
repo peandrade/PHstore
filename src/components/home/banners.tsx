@@ -84,7 +84,7 @@ export const Banners = ({ list }: Props) => {
 
           return banner.link ? (
             <Link
-              key={index}
+              key={banner.img}
               href={banner.link}
               className="transition-opacity duration-500 absolute inset-0"
               style={{ opacity: currentImage === index ? 1 : 0 }}
@@ -95,7 +95,7 @@ export const Banners = ({ list }: Props) => {
             </Link>
           ) : (
             <div
-              key={index}
+              key={banner.img}
               className="transition-opacity duration-500 absolute inset-0"
               style={{ opacity: currentImage === index ? 1 : 0 }}
               aria-hidden={currentImage !== index}
@@ -108,7 +108,7 @@ export const Banners = ({ list }: Props) => {
       <div className="mt-4 flex justify-center gap-4" role="tablist" aria-label="Navegação do carrossel">
         {list.map((banner, index) => (
           <button
-            key={index}
+            key={banner.img}
             className="size-4 bg-blue-600 rounded-full cursor-pointer transition-opacity"
             style={{ opacity: currentImage === index ? 1 : 0.3 }}
             onClick={() => handleBannerClick(index)}

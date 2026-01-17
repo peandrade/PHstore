@@ -1,8 +1,7 @@
 "use server";
 
+import { API_URL } from "@/config/api";
 import { Address } from "@/types/address";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export const getUserAddresses = async (token: string): Promise<Address[]> => {
   if (!token || typeof token !== "string" || token.length === 0) {

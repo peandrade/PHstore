@@ -1,9 +1,8 @@
 // src/actions/toggle-like.ts
 "use server";
 
+import { API_URL } from "@/config/api";
 import { getServerAuthToken } from "@/libs/server-cookies";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 type ToggleLikeResponse = {
   success: boolean;

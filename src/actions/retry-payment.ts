@@ -1,8 +1,7 @@
 "use server";
 
+import { API_URL } from "@/config/api";
 import { getServerAuthToken } from "@/libs/server-cookies";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export const retryPayment = async (orderId: number) => {
   try {
@@ -27,8 +26,9 @@ export const retryPayment = async (orderId: number) => {
     }
 
     return { success: true, paymentUrl: data.paymentUrl };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Retry payment error:", error);
-    return { error: error?.message || "Erro ao processar pagamento" };
+    const message = error instanceof Error ? error.message : "Erro ao processar pagamento";
+    return { error: message };
   }
 };

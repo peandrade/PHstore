@@ -5,7 +5,10 @@
       "Bash(git mv:*)",
       "Bash(git checkout:*)",
       "Bash(git push:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "Bash(git rm:*)",
+      "Bash(npm install)",
+      "Bash(git add:*)"
     ]
   }
 }

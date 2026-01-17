@@ -1,7 +1,7 @@
 // src/actions/search.ts
 "use server";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+import { API_URL } from "@/config/api";
 
 export type SearchProduct = {
   id: number;
