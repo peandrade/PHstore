@@ -5,7 +5,7 @@ import { ImageSlider } from "@/components/product/image-slider";
 import { ProductDetails } from "@/components/product/product-details";
 import { ProductDescription } from "@/components/product/product-description";
 import { RelatedProducts } from "@/components/product/related-products";
-import { RelatedProductsSkeleton } from "@/components/product/related-products-skeleton";
+import { ProductGridSkeleton } from "@/components/ui/product-grid-skeleton";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -45,7 +45,7 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </div>
       <ProductDescription text={product.description} />
-      <Suspense fallback={<RelatedProductsSkeleton />}>
+      <Suspense fallback={<ProductGridSkeleton />}>
         <RelatedProducts id={productId} />
       </Suspense>
     </div>
