@@ -5,6 +5,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { TIMING, SEARCH } from "@/config/constants";
 import { formatPrice } from "@/utils/formatters";
+import { useDebounce } from "@/hooks/use-debounce";
 import Image from "next/image";
 import Link from "next/link";
 import { searchProducts, SearchProduct, SearchKit } from "@/actions/search";
@@ -19,7 +20,7 @@ export const HeaderSearch = () => {
   const [kits, setKits] = useState<SearchKit[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const { debounce } = useDebounce(TIMING.SEARCH_DEBOUNCE);
 
   // Fecha ao clicar fora
   useEffect(() => {
@@ -63,14 +64,9 @@ export const HeaderSearch = () => {
     const value = e.target.value;
     setQuery(value);
 
-    // Debounce de 300ms
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-
-    debounceRef.current = setTimeout(() => {
+    debounce(() => {
       handleSearch(value);
-    }, TIMING.SEARCH_DEBOUNCE);
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {

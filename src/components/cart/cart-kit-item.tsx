@@ -2,8 +2,8 @@
 "use client";
 
 import { KitCartItem, useCartStore } from "@/store/cart";
-import { setCartState } from "@/actions/set-cart-state";
 import { formatPrice } from "@/utils/formatters";
+import { useCartSync } from "@/hooks/use-cart-sync";
 import Link from "next/link";
 
 type Props = {
@@ -13,31 +13,24 @@ type Props = {
 export const CartKitItem = ({ kit }: Props) => {
   const updateKitQuantity = useCartStore((state) => state.updateKitQuantity);
   const removeKit = useCartStore((state) => state.removeKit);
+  const { withSync } = useCartSync();
 
   const savings = (kit.kitOriginalPrice - kit.kitPrice) * kit.quantity;
   const totalPrice = kit.kitPrice * kit.quantity;
   const totalOriginalPrice = kit.kitOriginalPrice * kit.quantity;
 
-  const updateCart = async () => {
-    const state = useCartStore.getState();
-    await setCartState(state.cart, state.kits);
-  };
-
   const handleIncrement = async () => {
-    updateKitQuantity(kit.kitId, kit.quantity + 1);
-    await updateCart();
+    await withSync(() => updateKitQuantity(kit.kitId, kit.quantity + 1));
   };
 
   const handleDecrement = async () => {
     if (kit.quantity > 1) {
-      updateKitQuantity(kit.kitId, kit.quantity - 1);
-      await updateCart();
+      await withSync(() => updateKitQuantity(kit.kitId, kit.quantity - 1));
     }
   };
 
   const handleRemoveKit = async () => {
-    removeKit(kit.kitId);
-    await updateCart();
+    await withSync(() => removeKit(kit.kitId));
   };
 
   return (
