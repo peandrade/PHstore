@@ -1,5 +1,7 @@
 import { getOrderDetail } from "@/actions";
 import { getServerAuthToken } from "@/libs/server-cookies";
+import { formatDateTime, formatPrice } from "@/utils/formatters";
+import { getStatusColor, getStatusLabel } from "@/utils/order-helpers";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
@@ -24,50 +26,6 @@ export default async function OrderDetailPage({ params }: Props) {
     notFound();
   }
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case "paid":
-      case "completed":
-        return "bg-green-100 text-green-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "cancelled":
-        return "bg-red-100 text-red-800";
-      case "refunded":
-        return "bg-purple-100 text-purple-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case "paid":
-        return "Pago";
-      case "completed":
-        return "Concluído";
-      case "pending":
-        return "Pendente";
-      case "cancelled":
-        return "Cancelado";
-      case "refunded":
-        return "Reembolsado";
-      default:
-        return status || "Processando";
-    }
-  };
-
   const subtotal = order.products.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -75,7 +33,6 @@ export default async function OrderDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto py-8">
-      {/* Header */}
       <div className="mb-6">
         <Link
           href="/my-orders"
@@ -109,11 +66,10 @@ export default async function OrderDetailPage({ params }: Props) {
           </span>
         </div>
         <p className="text-gray-500 mt-1">
-          Realizado em {formatDate(order.createdAt)}
+          Realizado em {formatDateTime(order.createdAt)}
         </p>
       </div>
 
-      {/* Aviso de Pagamento Pendente */}
       {order.status === "pending" && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
           <div className="flex gap-3">
@@ -141,7 +97,6 @@ export default async function OrderDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* Aviso de Reembolso */}
       {order.status === "refunded" && (
         <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
           <div className="flex gap-3">
@@ -169,7 +124,6 @@ export default async function OrderDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* Produtos */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
         <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
           <h2 className="font-semibold text-gray-900">
@@ -200,12 +154,12 @@ export default async function OrderDetailPage({ params }: Props) {
                   Quantidade: {product.quantity}
                 </p>
                 <p className="text-sm text-gray-500">
-                  R$ {product.price.toFixed(2)} cada
+                  {formatPrice(product.price)} cada
                 </p>
               </div>
               <div className="text-right">
                 <p className="font-semibold text-gray-900">
-                  R$ {(product.price * product.quantity).toFixed(2)}
+                  {formatPrice(product.price * product.quantity)}
                 </p>
               </div>
             </div>
@@ -213,17 +167,16 @@ export default async function OrderDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Resumo de Valores */}
       <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
         <h2 className="font-semibold text-gray-900 mb-4">Resumo do Pedido</h2>
         <div className="space-y-3">
           <div className="flex justify-between text-gray-600">
             <span>Subtotal</span>
-            <span>R$ {subtotal.toFixed(2)}</span>
+            <span>{formatPrice(subtotal)}</span>
           </div>
           <div className="flex justify-between text-gray-600">
             <span>Frete</span>
-            <span>R$ {order.shippingCost.toFixed(2)}</span>
+            <span>{formatPrice(order.shippingCost)}</span>
           </div>
           <div className="flex justify-between font-bold text-lg text-gray-900 pt-3 border-t border-gray-200">
             <span>Total</span>
@@ -234,19 +187,18 @@ export default async function OrderDetailPage({ params }: Props) {
                   : "text-blue-600"
               }
             >
-              R$ {order.total.toFixed(2)}
+              {formatPrice(order.total)}
             </span>
           </div>
           {order.status === "refunded" && (
             <div className="flex justify-between text-sm text-purple-600">
               <span>Valor reembolsado</span>
-              <span>R$ {order.total.toFixed(2)}</span>
+              <span>{formatPrice(order.total)}</span>
             </div>
           )}
         </div>
       </div>
 
-      {/* Endereço de Entrega */}
       <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
         <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <svg
@@ -287,7 +239,6 @@ export default async function OrderDetailPage({ params }: Props) {
         )}
       </div>
 
-      {/* Botões */}
       <div className="flex flex-col sm:flex-row gap-4">
         <RetryPaymentButton orderId={order.id} status={order.status} />
         <RefundButton orderId={order.id} status={order.status} />

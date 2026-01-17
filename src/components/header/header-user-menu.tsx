@@ -1,4 +1,3 @@
-// src/components/header/header-user-menu.tsx
 "use client";
 
 import { useAuthStore } from "@/store/auth";
@@ -19,7 +18,6 @@ export const HeaderUserMenu = () => {
 
   const isLoggedIn = hydrated && typeof token === "string" && token.length > 0;
 
-  // Fecha o menu ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -40,7 +38,6 @@ export const HeaderUserMenu = () => {
     router.push("/");
   };
 
-  // Skeleton enquanto hidrata
   if (!hydrated) {
     return (
       <div className="size-12 border border-gray-200 rounded-sm flex justify-center items-center bg-gray-50 animate-pulse" />
@@ -49,7 +46,6 @@ export const HeaderUserMenu = () => {
 
   return (
     <div className="relative" ref={menuRef}>
-      {/* Botão do usuário */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`size-12 border rounded-sm flex justify-center items-center transition-colors ${
@@ -73,12 +69,10 @@ export const HeaderUserMenu = () => {
         </svg>
       </button>
 
-      {/* Dropdown Menu */}
       {isOpen && (
         <div className="absolute right-0 top-14 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
           {isLoggedIn ? (
             <>
-              {/* Menu para usuário logado */}
               <div className="p-4 bg-gray-50 border-b border-gray-200">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
@@ -148,7 +142,6 @@ export const HeaderUserMenu = () => {
             </>
           ) : (
             <>
-              {/* Menu para usuário não logado */}
               <div className="p-4 bg-gray-50 border-b border-gray-200">
                 <p className="font-semibold text-gray-800">Bem-vindo!</p>
                 <p className="text-sm text-gray-500">

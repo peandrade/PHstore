@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function RegisterPage() {
   const router = useRouter();
-  
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,7 +19,7 @@ export default function RegisterPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setError(null); // Limpa erro ao digitar
+    setError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,12 +47,11 @@ export default function RegisterPage() {
 
       console.log("✅ Usuário criado:", data);
       setSuccess(true);
-      
-      // Redireciona para login após 2 segundos
+
       setTimeout(() => {
         router.push("/login");
       }, 2000);
-      
+
     } catch (err) {
       console.error("❌ Erro no registro:", err);
       setError(err instanceof Error ? err.message : "Erro ao criar conta");
@@ -68,7 +68,6 @@ export default function RegisterPage() {
             Criar Conta
           </h1>
 
-          {/* Mensagem de Sucesso */}
           {success && (
             <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
               <p className="text-green-700 text-center">
@@ -77,7 +76,6 @@ export default function RegisterPage() {
             </div>
           )}
 
-          {/* Mensagem de Erro */}
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-700 text-center">{error}</p>
@@ -85,7 +83,6 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Campo Nome */}
             <div>
               <label
                 htmlFor="name"
@@ -106,7 +103,6 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Campo Email */}
             <div>
               <label
                 htmlFor="email"
@@ -126,7 +122,6 @@ export default function RegisterPage() {
               />
             </div>
 
-            {/* Campo Senha */}
             <div>
               <label
                 htmlFor="password"
@@ -150,7 +145,6 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            {/* Botão de Submit */}
             <button
               type="submit"
               disabled={isLoading || success}
@@ -158,26 +152,7 @@ export default function RegisterPage() {
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <svg
-                    className="animate-spin h-5 w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
+                  <Spinner className="text-white" />
                   Criando conta...
                 </span>
               ) : (
@@ -186,7 +161,6 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          {/* Link para Login */}
           <p className="mt-6 text-center text-sm text-gray-600">
             Já tem uma conta?{" "}
             <a

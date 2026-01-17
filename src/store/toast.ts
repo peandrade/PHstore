@@ -1,4 +1,3 @@
-// src/store/toast.ts
 import { create } from "zustand";
 
 type ToastType = "info" | "success" | "error" | "login";
@@ -24,7 +23,6 @@ export const useToastStore = create<ToastState>((set) => ({
       toasts: [...state.toasts, { id, type, message }],
     }));
 
-    // Auto remove após 3 segundos
     setTimeout(() => {
       set((state) => ({
         toasts: state.toasts.filter((t) => t.id !== id),

@@ -1,8 +1,6 @@
 "use server";
 
-import { getServerAuthToken } from "@/libs/server-cookies";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+import { authenticatedFetch } from "@/libs/authenticated-fetch";
 
 export type OrderListItem = {
   id: number;
@@ -11,32 +9,19 @@ export type OrderListItem = {
   createdAt: string;
 };
 
+type OrdersResponse = {
+  orders: OrderListItem[];
+};
+
 export const getUserOrders = async (): Promise<OrderListItem[]> => {
-  try {
-    const token = await getServerAuthToken();
+  const result = await authenticatedFetch<OrdersResponse>("/orders", {
+    fallbackValue: { orders: [] },
+  });
 
-    if (!token) {
-      return [];
-    }
-
-    const response = await fetch(`${API_URL}/orders`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      console.error("Erro ao buscar pedidos:", response.status);
-      return [];
-    }
-
-    const data = await response.json();
-    return data.orders || [];
-  } catch (error) {
-    console.error("Erro ao buscar pedidos:", error);
+  if (!result.success) {
+    console.error("Erro ao buscar pedidos:", result.error);
     return [];
   }
+
+  return result.data.orders || [];
 };

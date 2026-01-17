@@ -1,15 +1,19 @@
 "use server";
 
+import { authenticatedFetch } from "@/libs/authenticated-fetch";
 import { CartItem } from "@/types/cart-item";
 import { KitCartItem } from "@/store/cart";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 type FinishCartResponse = {
   success: boolean;
   checkoutUrl?: string;
   orderId?: number;
   error?: string;
+};
+
+type ApiFinishCartResponse = {
+  orderId: number;
+  url: string;
 };
 
 export const finishCart = async (
@@ -30,73 +34,53 @@ export const finishCart = async (
     return { success: false, error: "Carrinho vazio" };
   }
 
-  try {
-    // Combina produtos individuais com produtos dos kits
-    const allCartItems: { productId: number; quantity: number }[] = [];
+  const allCartItems: { productId: number; quantity: number }[] = [];
 
-    // Adiciona produtos individuais
-    for (const item of cart) {
-      allCartItems.push({
-        productId: item.productId,
-        quantity: item.quantity,
-      });
-    }
+  for (const item of cart) {
+    allCartItems.push({
+      productId: item.productId,
+      quantity: item.quantity,
+    });
+  }
 
-    // Adiciona produtos dos kits (considerando quantidade do kit)
-    for (const kit of kits) {
-      for (const product of kit.products) {
-        // Quantidade total = quantidade do produto no kit * quantidade de kits
-        const totalQuantity = product.quantity * kit.quantity;
+  for (const kit of kits) {
+    for (const product of kit.products) {
+      const totalQuantity = product.quantity * kit.quantity;
 
-        // Verifica se o produto já existe no carrinho
-        const existingIndex = allCartItems.findIndex(
-          (item) => item.productId === product.productId
-        );
+      const existingIndex = allCartItems.findIndex(
+        (item) => item.productId === product.productId
+      );
 
-        if (existingIndex > -1) {
-          // Soma a quantidade
-          allCartItems[existingIndex].quantity += totalQuantity;
-        } else {
-          // Adiciona novo item
-          allCartItems.push({
-            productId: product.productId,
-            quantity: totalQuantity,
-          });
-        }
+      if (existingIndex > -1) {
+        allCartItems[existingIndex].quantity += totalQuantity;
+      } else {
+        allCartItems.push({
+          productId: product.productId,
+          quantity: totalQuantity,
+        });
       }
     }
+  }
 
-    const response = await fetch(`${API_URL}/cart/finish`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        addressId,
-        cart: allCartItems,
-      }),
-    });
+  const result = await authenticatedFetch<ApiFinishCartResponse>("/cart/finish", {
+    method: "POST",
+    body: {
+      addressId,
+      cart: allCartItems,
+    },
+    token,
+  });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || data.message || "Erro ao finalizar pedido",
-      };
-    }
-
-    return {
-      success: true,
-      orderId: data.orderId,
-      checkoutUrl: data.url,
-    };
-  } catch (error) {
-    console.error("Erro ao finalizar carrinho:", error);
+  if (!result.success) {
     return {
       success: false,
-      error: "Erro ao conectar com o servidor",
+      error: result.error || "Erro ao finalizar pedido",
     };
   }
+
+  return {
+    success: true,
+    orderId: result.data.orderId,
+    checkoutUrl: result.data.url,
+  };
 };

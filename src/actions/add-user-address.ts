@@ -1,14 +1,17 @@
 "use server";
 
+import { authenticatedFetch } from "@/libs/authenticated-fetch";
 import { Address } from "@/types/address";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 type AddAddressResponse = {
   success: boolean;
   error?: string;
   address?: Address;
   addresses?: Address[];
+};
+
+type ApiAddAddressResponse = {
+  address?: Address;
 };
 
 export const addUserAddress = async (
@@ -19,34 +22,21 @@ export const addUserAddress = async (
     return { success: false, error: "Usuário não autenticado" };
   }
 
-  try {
-    const response = await fetch(`${API_URL}/user/addresses`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(address),
-    });
+  const result = await authenticatedFetch<ApiAddAddressResponse>("/user/addresses", {
+    method: "POST",
+    body: address,
+    token,
+  });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || data.message || "Erro ao adicionar endereço",
-      };
-    }
-
-    return {
-      success: true,
-      address: data.address,
-    };
-  } catch (error) {
-    console.error("Erro ao adicionar endereço:", error);
+  if (!result.success) {
     return {
       success: false,
-      error: "Erro ao conectar com o servidor",
+      error: result.error || "Erro ao adicionar endereço",
     };
   }
+
+  return {
+    success: true,
+    address: result.data.address,
+  };
 };

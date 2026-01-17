@@ -1,4 +1,3 @@
-// src/components/providers/likes-provider.tsx
 "use client";
 
 import { getUserLikes } from "@/actions";

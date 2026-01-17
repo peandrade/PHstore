@@ -1,43 +1,35 @@
 "use server";
 
+import { authenticatedFetch } from "@/libs/authenticated-fetch";
 import { Address } from "@/types/address";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+type AddressesResponse = {
+  addresses: Address[];
+};
 
 export const getUserAddresses = async (token: string): Promise<Address[]> => {
   if (!token || typeof token !== "string" || token.length === 0) {
     return [];
   }
 
-  try {
-    const response = await fetch(`${API_URL}/user/addresses`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      cache: "no-store",
-    });
+  const result = await authenticatedFetch<AddressesResponse>("/user/addresses", {
+    token,
+    fallbackValue: { addresses: [] },
+  });
 
-    if (!response.ok) {
-      console.error("Erro ao buscar endereços:", response.status);
-      return [];
-    }
-
-    const data = await response.json();
-
-    if (data && Array.isArray(data.addresses)) {
-      return data.addresses;
-    }
-
-    if (Array.isArray(data)) {
-      return data;
-    }
-
-    console.error("Resposta inesperada do servidor:", data);
-    return [];
-  } catch (error) {
-    console.error("Erro ao buscar endereços:", error);
+  if (!result.success) {
+    console.error("Erro ao buscar endereços:", result.error);
     return [];
   }
+
+  if (Array.isArray(result.data.addresses)) {
+    return result.data.addresses;
+  }
+
+  if (Array.isArray(result.data)) {
+    return result.data as unknown as Address[];
+  }
+
+  console.error("Resposta inesperada do servidor:", result.data);
+  return [];
 };

@@ -1,8 +1,7 @@
-// src/store/likes.ts
 import { create } from "zustand";
 
 type LikesState = {
-  likes: number[]; // Array de IDs de produtos favoritados
+  likes: number[];
   hydrated: boolean;
   setLikes: (likes: number[]) => void;
   addLike: (productId: number) => void;

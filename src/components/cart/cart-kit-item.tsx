@@ -1,8 +1,8 @@
-// src/components/cart/cart-kit-item.tsx
 "use client";
 
 import { KitCartItem, useCartStore } from "@/store/cart";
-import { setCartState } from "@/actions/set-cart-state";
+import { formatPrice } from "@/utils/formatters";
+import { useCartSync } from "@/hooks/use-cart-sync";
 import Link from "next/link";
 
 type Props = {
@@ -12,37 +12,29 @@ type Props = {
 export const CartKitItem = ({ kit }: Props) => {
   const updateKitQuantity = useCartStore((state) => state.updateKitQuantity);
   const removeKit = useCartStore((state) => state.removeKit);
+  const { withSync } = useCartSync();
 
   const savings = (kit.kitOriginalPrice - kit.kitPrice) * kit.quantity;
   const totalPrice = kit.kitPrice * kit.quantity;
   const totalOriginalPrice = kit.kitOriginalPrice * kit.quantity;
 
-  const updateCart = async () => {
-    const state = useCartStore.getState();
-    await setCartState(state.cart, state.kits);
-  };
-
   const handleIncrement = async () => {
-    updateKitQuantity(kit.kitId, kit.quantity + 1);
-    await updateCart();
+    await withSync(() => updateKitQuantity(kit.kitId, kit.quantity + 1));
   };
 
   const handleDecrement = async () => {
     if (kit.quantity > 1) {
-      updateKitQuantity(kit.kitId, kit.quantity - 1);
-      await updateCart();
+      await withSync(() => updateKitQuantity(kit.kitId, kit.quantity - 1));
     }
   };
 
   const handleRemoveKit = async () => {
-    removeKit(kit.kitId);
-    await updateCart();
+    await withSync(() => removeKit(kit.kitId));
   };
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4">
       <div className="flex items-start gap-4">
-        {/* Info do Kit */}
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <span className="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">
@@ -52,7 +44,7 @@ export const CartKitItem = ({ kit }: Props) => {
               -{Math.round(((kit.kitOriginalPrice - kit.kitPrice) / kit.kitOriginalPrice) * 100)}%
             </span>
           </div>
-          
+
           <Link
             href={`/kits/${kit.kitSlug}`}
             className="font-semibold text-gray-800 hover:text-blue-600 transition-colors block mb-2"
@@ -60,7 +52,6 @@ export const CartKitItem = ({ kit }: Props) => {
             {kit.kitLabel}
           </Link>
 
-          {/* Produtos inclusos */}
           <div className="text-sm text-gray-500 space-y-1 mb-3">
             {kit.products.map((product) => (
               <div key={product.productId}>
@@ -69,21 +60,18 @@ export const CartKitItem = ({ kit }: Props) => {
             ))}
           </div>
 
-          {/* Preço unitário */}
           <div className="flex items-center gap-2 text-sm">
             <span className="text-gray-400 line-through">
-              R$ {kit.kitOriginalPrice.toFixed(2)}
+              {formatPrice(kit.kitOriginalPrice)}
             </span>
             <span className="font-semibold text-blue-600">
-              R$ {kit.kitPrice.toFixed(2)}
+              {formatPrice(kit.kitPrice)}
             </span>
             <span className="text-gray-400">/ unidade</span>
           </div>
         </div>
 
-        {/* Controles de quantidade */}
         <div className="flex flex-col items-end gap-3">
-          {/* Quantidade */}
           <div className="flex items-center border border-gray-200 rounded">
             <button
               onClick={handleDecrement}
@@ -103,24 +91,22 @@ export const CartKitItem = ({ kit }: Props) => {
             </button>
           </div>
 
-          {/* Preço total */}
           <div className="text-right">
             {kit.quantity > 1 && (
               <div className="text-gray-400 line-through text-sm">
-                R$ {totalOriginalPrice.toFixed(2)}
+                {formatPrice(totalOriginalPrice)}
               </div>
             )}
             <div className="text-xl font-bold text-blue-600">
-              R$ {totalPrice.toFixed(2)}
+              {formatPrice(totalPrice)}
             </div>
             {savings > 0 && (
               <div className="text-green-600 text-xs font-medium">
-                Economia: R$ {savings.toFixed(2)}
+                Economia: {formatPrice(savings)}
               </div>
             )}
           </div>
 
-          {/* Botão remover */}
           <button
             onClick={handleRemoveKit}
             className="text-gray-400 hover:text-red-500 transition-colors p-1"

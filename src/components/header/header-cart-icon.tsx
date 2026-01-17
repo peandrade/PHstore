@@ -1,4 +1,3 @@
-// src/components/header/header-cart-icon.tsx
 "use client";
 
 import { useCartStore } from "@/store/cart";
@@ -10,10 +9,8 @@ export const HeaderCartIcon = () => {
   const cart = useCartStore((state) => state.cart);
   const kits = useCartStore((state) => state.kits);
 
-  // Verifica se está na página do carrinho
   const isCartPage = pathname === "/cart" || pathname.startsWith("/cart/");
 
-  // Conta total de itens (produtos + quantidade de kits)
   const productCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   const kitCount = kits.reduce((sum, kit) => sum + kit.quantity, 0);
   const totalItems = productCount + kitCount;
@@ -42,7 +39,6 @@ export const HeaderCartIcon = () => {
         </svg>
       </div>
 
-      {/* Badge com quantidade */}
       {totalItems > 0 && (
         <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1">
           {totalItems > 99 ? "99+" : totalItems}

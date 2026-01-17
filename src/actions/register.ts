@@ -1,6 +1,6 @@
 "use server";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+import { API_URL } from "@/config/api";
 
 type RegisterData = {
   name: string;
@@ -25,7 +25,6 @@ export const register = async ({
   password,
 }: RegisterData): Promise<RegisterResponse> => {
   try {
-    // 1. Primeiro faz o registro
     const registerResponse = await fetch(`${API_URL}/user/register`, {
       method: "POST",
       headers: {

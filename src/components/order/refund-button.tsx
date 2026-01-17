@@ -1,6 +1,7 @@
 "use client";
 
 import { requestRefund } from "@/actions/request-refund";
+import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -15,7 +16,6 @@ export const RefundButton = ({ orderId, status }: Props) => {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  // Só mostra o botão se o status for "paid"
   if (status !== "paid") {
     return null;
   }
@@ -36,7 +36,6 @@ export const RefundButton = ({ orderId, status }: Props) => {
 
   return (
     <>
-      {/* Botão de Solicitar Reembolso */}
       <button
         onClick={() => setShowModal(true)}
         className="flex-1 px-6 py-3 border border-red-300 text-red-600 text-center rounded-lg font-medium hover:bg-red-50 transition-colors"
@@ -44,7 +43,6 @@ export const RefundButton = ({ orderId, status }: Props) => {
         Solicitar Reembolso
       </button>
 
-      {/* Modal de Confirmação */}
       {showModal && (
         <div
           className="fixed inset-0 flex justify-center items-center z-50 p-4 bg-black/50 backdrop-blur-sm"
@@ -54,7 +52,6 @@ export const RefundButton = ({ orderId, status }: Props) => {
             className="relative bg-white rounded-2xl w-full max-w-md shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
@@ -101,7 +98,6 @@ export const RefundButton = ({ orderId, status }: Props) => {
               </button>
             </div>
 
-            {/* Conteúdo */}
             <div className="p-6">
               <p className="text-gray-600 mb-4">
                 Tem certeza que deseja solicitar o reembolso deste pedido?
@@ -129,7 +125,6 @@ export const RefundButton = ({ orderId, status }: Props) => {
                 </div>
               </div>
 
-              {/* Erro */}
               {error && (
                 <div className="flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
                   <svg
@@ -147,7 +142,6 @@ export const RefundButton = ({ orderId, status }: Props) => {
                 </div>
               )}
 
-              {/* Botões */}
               <div className="flex gap-3">
                 <button
                   type="button"
@@ -164,25 +158,7 @@ export const RefundButton = ({ orderId, status }: Props) => {
                   className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {isPending ? (
-                    <svg
-                      className="animate-spin h-5 w-5 text-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
+                    <Spinner className="text-white" />
                   ) : (
                     <>
                       <svg

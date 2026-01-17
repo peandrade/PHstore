@@ -1,8 +1,8 @@
-// src/app/(site)/kits/[slug]/page.tsx
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getKitBySlug } from "@/libs/api";
+import { formatPrice } from "@/utils/formatters";
 import { AddKitToCartButton } from "@/components/kits/add-kit-to-cart-button";
 
 type Props = {
@@ -20,7 +20,6 @@ export default async function KitPage({ params }: Props) {
 
   const savings = kit.originalPrice - kit.price;
 
-  // Prepara os produtos para o botão de adicionar ao carrinho
   const productsForCart = kit.products.map((product) => ({
     id: product.id,
     label: product.label,
@@ -87,17 +86,17 @@ export default async function KitPage({ params }: Props) {
           <div className="rounded-lg p-6 mb-6">
             <div className="flex items-baseline gap-3 mb-2">
               <span className="text-4xl font-bold text-blue-600">
-                R$ {kit.price.toFixed(2)}
+                {formatPrice(kit.price)}
               </span>
               <span className="text-xl text-gray-400 line-through">
-                R$ {kit.originalPrice.toFixed(2)}
+                {formatPrice(kit.originalPrice)}
               </span>
             </div>
             <div className="text-green-600 font-semibold">
-              Você economiza R$ {savings.toFixed(2)}
+              Você economiza {formatPrice(savings)}
             </div>
             <div className="text-gray-500 text-sm mt-2">
-              Em até 12x de R$ {(kit.price / 12).toFixed(2)} no cartão
+              Em até 12x de {formatPrice(kit.price / 12)} no cartão
             </div>
           </div>
 
@@ -143,7 +142,7 @@ export default async function KitPage({ params }: Props) {
                   </div>
                   <div className="text-right">
                     <div className="text-gray-400 line-through text-sm">
-                      R$ {product.price.toFixed(2)}
+                      {formatPrice(product.price)}
                     </div>
                   </div>
                 </div>

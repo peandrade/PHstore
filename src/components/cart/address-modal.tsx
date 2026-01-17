@@ -1,4 +1,6 @@
 import { Address } from "@/types/address";
+import { ADDRESS } from "@/config/constants";
+import { Spinner } from "@/components/ui/spinner";
 import {
   ChangeEvent,
   FormEvent,
@@ -42,7 +44,6 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
   const [loadingCep, setLoadingCep] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Animação de entrada
   useEffect(() => {
     if (open) {
       requestAnimationFrame(() => setIsVisible(true));
@@ -62,9 +63,9 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
 
   const handleCepChange = async (e: ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
-    if (value.length > 8) value = value.slice(0, 8);
-    if (value.length > 5) {
-      value = value.slice(0, 5) + "-" + value.slice(5);
+    if (value.length > ADDRESS.CEP_LENGTH) value = value.slice(0, ADDRESS.CEP_LENGTH);
+    if (value.length > ADDRESS.CEP_HYPHEN_POSITION) {
+      value = value.slice(0, ADDRESS.CEP_HYPHEN_POSITION) + "-" + value.slice(ADDRESS.CEP_HYPHEN_POSITION);
     }
 
     setForm({ ...form, zipcode: value });
@@ -73,8 +74,7 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
       setErrors({ ...errors, zipcode: "" });
     }
 
-    // Busca automática quando CEP estiver completo
-    if (value.replace(/\D/g, "").length === 8) {
+    if (value.replace(/\D/g, "").length === ADDRESS.CEP_LENGTH) {
       setLoadingCep(true);
       try {
         const response = await fetch(
@@ -116,8 +116,9 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
       try {
         await onAdd(form);
         setForm(emptyAddress);
-      } catch (err: any) {
-        setErrors({ submit: err?.message || "Erro ao salvar o endereço" });
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Erro ao salvar o endereço";
+        setErrors({ submit: message });
       }
     });
   };
@@ -151,7 +152,6 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
         `}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
@@ -204,9 +204,7 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-6">
-          {/* Erro geral */}
           {errors.submit && (
             <div className="flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-5">
               <svg
@@ -225,7 +223,6 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
           )}
 
           <div className="space-y-5">
-            {/* CEP */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 CEP
@@ -257,25 +254,7 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
                 />
                 {loadingCep && (
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <svg
-                      className="animate-spin h-5 w-5 text-blue-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
+                    <Spinner className="text-blue-500" />
                   </div>
                 )}
               </div>
@@ -288,7 +267,6 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
               )}
             </div>
 
-            {/* Endereço + Número */}
             <div className="grid grid-cols-3 gap-3">
               <div className="col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -329,7 +307,6 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
               </div>
             </div>
 
-            {/* Complemento */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 Complemento{" "}
@@ -346,7 +323,6 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
               />
             </div>
 
-            {/* Cidade + Estado */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -390,7 +366,6 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
               </div>
             </div>
 
-            {/* País */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 País
@@ -415,7 +390,6 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex gap-3 mt-8">
             <button
               type="button"
@@ -431,25 +405,7 @@ export const AddressModal = ({ open, onClose, onAdd }: Props) => {
               className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {pending ? (
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
+                <Spinner className="text-white" />
               ) : (
                 <>
                   <svg

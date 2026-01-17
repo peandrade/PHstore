@@ -1,8 +1,6 @@
 "use server";
 
-import { getServerAuthToken } from "@/libs/server-cookies";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+import { authenticatedFetch } from "@/libs/authenticated-fetch";
 
 export type OrderDetailProduct = {
   id: number;
@@ -58,58 +56,46 @@ type OrderResponse = {
   orderItems: OrderItemResponse[];
 };
 
+type ApiOrderResponse = {
+  order: OrderResponse;
+};
+
 export const getOrderDetail = async (
   orderId: number
 ): Promise<OrderDetail | null> => {
-  try {
-    const token = await getServerAuthToken();
+  const result = await authenticatedFetch<ApiOrderResponse>(`/orders/${orderId}`, {
+    requireAuth: true,
+    cache: "no-store",
+  });
 
-    if (!token) {
-      return null;
-    }
-
-    const response = await fetch(`${API_URL}/orders/${orderId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      console.error("Erro ao buscar pedido:", response.status);
-      return null;
-    }
-
-    const data = await response.json();
-    const order = data.order as OrderResponse;
-
-    return {
-      id: order.id,
-      status: order.status,
-      total: order.total,
-      shippingCost: order.shippingCost,
-      shippingDays: order.shippingDays,
-      createdAt: order.createdAt,
-      address: {
-        street: order.shippingStreet,
-        number: order.shippingNumber,
-        city: order.shippingCity,
-        state: order.shippingState,
-        zipcode: order.shippingZipcode,
-        complement: order.shippingComplement,
-      },
-      products: order.orderItems.map((item) => ({
-        id: item.product.id,
-        label: item.product.label,
-        price: item.price,
-        quantity: item.quantity,
-        image: item.product.image,
-      })),
-    };
-  } catch (error) {
-    console.error("Erro ao buscar pedido:", error);
+  if (!result.success) {
+    console.error("Erro ao buscar pedido:", result.error);
     return null;
   }
+
+  const order = result.data.order;
+
+  return {
+    id: order.id,
+    status: order.status,
+    total: order.total,
+    shippingCost: order.shippingCost,
+    shippingDays: order.shippingDays,
+    createdAt: order.createdAt,
+    address: {
+      street: order.shippingStreet,
+      number: order.shippingNumber,
+      city: order.shippingCity,
+      state: order.shippingState,
+      zipcode: order.shippingZipcode,
+      complement: order.shippingComplement,
+    },
+    products: order.orderItems.map((item) => ({
+      id: item.product.id,
+      label: item.product.label,
+      price: item.price,
+      quantity: item.quantity,
+      image: item.product.image,
+    })),
+  };
 };

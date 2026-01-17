@@ -1,4 +1,3 @@
-// src/providers/store-hydration.tsx
 "use client";
 
 import { getAuthState } from "@/actions/get-auth-state";
@@ -17,12 +16,10 @@ export const StoreHydration = () => {
 
   useEffect(() => {
     const hydrate = async () => {
-      // Hidrata auth
       const { token } = await getAuthState();
       if (token) {
         setToken(token);
 
-        // Se logado, carrega os likes
         try {
           const likes = await getUserLikes();
           setLikes(likes);
@@ -33,7 +30,6 @@ export const StoreHydration = () => {
       setHydrated(true);
       setLikesHydrated(true);
 
-      // Hidrata cart
       const { cart, kits } = await getCartState();
       if (cart.length > 0 || kits.length > 0) {
         useCartStore.setState({ cart, kits });

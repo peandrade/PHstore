@@ -1,52 +1,54 @@
-// src/components/header/header-search.tsx
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { TIMING, SEARCH } from "@/config/constants";
+import { formatPrice } from "@/utils/formatters";
+import { useDebounce } from "@/hooks/use-debounce";
+import { useToggle } from "@/hooks/use-toggle";
 import Image from "next/image";
 import Link from "next/link";
 import { searchProducts, SearchProduct, SearchKit } from "@/actions/search";
+import { Spinner } from "@/components/ui/spinner";
 
 export const HeaderSearch = () => {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, , open, close] = useToggle(false);
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<SearchProduct[]>([]);
   const [kits, setKits] = useState<SearchKit[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const { debounce } = useDebounce(TIMING.SEARCH_DEBOUNCE);
 
-  // Fecha ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false);
+        close();
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [close]);
 
-  // Debounced search
   const handleSearch = useCallback(async (searchQuery: string) => {
-    if (searchQuery.trim().length < 2) {
+    if (searchQuery.trim().length < SEARCH.MIN_CHARS) {
       setProducts([]);
       setKits([]);
-      setIsOpen(false);
+      close();
       return;
     }
 
     setIsLoading(true);
-    setIsOpen(true);
+    open();
 
     try {
-      const result = await searchProducts(searchQuery, 5);
+      const result = await searchProducts(searchQuery, SEARCH.RESULT_LIMIT);
       setProducts(result.products);
       setKits(result.kits);
     } catch (error) {
@@ -54,32 +56,27 @@ export const HeaderSearch = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [open, close]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
 
-    // Debounce de 300ms
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-
-    debounceRef.current = setTimeout(() => {
+    debounce(() => {
       handleSearch(value);
-    }, 300);
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim().length >= 2) {
-      setIsOpen(false);
+    if (query.trim().length >= SEARCH.MIN_CHARS) {
+      close();
       router.push(`/search?q=${encodeURIComponent(query)}`);
     }
   };
 
   const handleResultClick = () => {
-    setIsOpen(false);
+    close();
     setQuery("");
   };
 
@@ -95,8 +92,8 @@ export const HeaderSearch = () => {
             value={query}
             onChange={handleInputChange}
             onFocus={() => {
-              if (query.trim().length >= 2 && hasResults) {
-                setIsOpen(true);
+              if (query.trim().length >= SEARCH.MIN_CHARS && hasResults) {
+                open();
               }
             }}
             style={isLoading ? { paddingRight: "3rem" } : undefined}
@@ -118,39 +115,19 @@ export const HeaderSearch = () => {
           </svg>
           {isLoading && (
             <div className="absolute right-4 top-1/2 -translate-y-1/2">
-              <svg
-                className="animate-spin h-5 w-5 text-blue-500"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
+              <Spinner className="text-blue-500" />
             </div>
           )}
         </div>
       </form>
 
-      {/* Dropdown de resultados */}
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-[70vh] overflow-y-auto">
           {isLoading && !hasResults && (
             <div className="p-4 text-center text-gray-500">Buscando...</div>
           )}
 
-          {!isLoading && !hasResults && query.trim().length >= 2 && (
+          {!isLoading && !hasResults && query.trim().length >= SEARCH.MIN_CHARS && (
             <div className="p-4 text-center text-gray-500">
               <p className="mb-2">Nenhum resultado encontrado para &quot;{query}&quot;</p>
               <p className="text-sm">Tente buscar por outro termo</p>
@@ -159,7 +136,6 @@ export const HeaderSearch = () => {
 
           {hasResults && (
             <>
-              {/* Produtos */}
               {products.length > 0 && (
                 <div>
                   <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
@@ -194,7 +170,7 @@ export const HeaderSearch = () => {
                           {product.label}
                         </p>
                         <p className="text-sm text-blue-600 font-semibold">
-                          R$ {product.price.toFixed(2)}
+                          {formatPrice(product.price)}
                         </p>
                       </div>
                     </Link>
@@ -202,7 +178,6 @@ export const HeaderSearch = () => {
                 </div>
               )}
 
-              {/* Kits */}
               {kits.length > 0 && (
                 <div>
                   <div className="px-4 py-2 bg-gray-50 border-b border-gray-200">
@@ -243,10 +218,10 @@ export const HeaderSearch = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-gray-400 line-through">
-                            R$ {kit.originalPrice.toFixed(2)}
+                            {formatPrice(kit.originalPrice)}
                           </span>
                           <span className="text-sm text-blue-600 font-semibold">
-                            R$ {kit.price.toFixed(2)}
+                            {formatPrice(kit.price)}
                           </span>
                         </div>
                       </div>
@@ -255,7 +230,6 @@ export const HeaderSearch = () => {
                 </div>
               )}
 
-              {/* Ver todos os resultados */}
               <Link
                 href={`/search?q=${encodeURIComponent(query)}`}
                 onClick={handleResultClick}

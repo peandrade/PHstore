@@ -1,34 +1,23 @@
 "use server";
 
-import { getServerAuthToken } from "@/libs/server-cookies";
+import { authenticatedFetch } from "@/libs/authenticated-fetch";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+type RefundResponse = {
+  message?: string;
+};
 
 export const requestRefund = async (orderId: number) => {
-  try {
-    const token = await getServerAuthToken();
-
-    if (!token) {
-      return { error: "Você precisa estar logado" };
-    }
-
-    const response = await fetch(`${API_URL}/orders/${orderId}/refund`, {
+  const result = await authenticatedFetch<RefundResponse>(
+    `/orders/${orderId}/refund`,
+    {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return { error: data.message || data.error || "Erro ao solicitar reembolso" };
+      requireAuth: true,
     }
+  );
 
-    return { success: true, message: data.message };
-  } catch (error: any) {
-    console.error("Refund error:", error);
-    return { error: error?.message || "Erro ao solicitar reembolso" };
+  if (!result.success) {
+    return { error: result.error || "Erro ao solicitar reembolso" };
   }
+
+  return { success: true, message: result.data.message };
 };
