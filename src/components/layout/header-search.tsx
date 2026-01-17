@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { TIMING, SEARCH } from "@/config/constants";
 import { formatPrice } from "@/utils/formatters";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useToggle } from "@/hooks/use-toggle";
 import Image from "next/image";
 import Link from "next/link";
 import { searchProducts, SearchProduct, SearchKit } from "@/actions/search";
@@ -14,7 +15,7 @@ import { Spinner } from "@/components/ui/spinner";
 export const HeaderSearch = () => {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, , open, close] = useToggle(false);
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<SearchProduct[]>([]);
   const [kits, setKits] = useState<SearchKit[]>([]);
@@ -29,25 +30,25 @@ export const HeaderSearch = () => {
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false);
+        close();
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [close]);
 
   // Debounced search
   const handleSearch = useCallback(async (searchQuery: string) => {
     if (searchQuery.trim().length < SEARCH.MIN_CHARS) {
       setProducts([]);
       setKits([]);
-      setIsOpen(false);
+      close();
       return;
     }
 
     setIsLoading(true);
-    setIsOpen(true);
+    open();
 
     try {
       const result = await searchProducts(searchQuery, SEARCH.RESULT_LIMIT);
@@ -58,7 +59,7 @@ export const HeaderSearch = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [open, close]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -72,13 +73,13 @@ export const HeaderSearch = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim().length >= SEARCH.MIN_CHARS) {
-      setIsOpen(false);
+      close();
       router.push(`/search?q=${encodeURIComponent(query)}`);
     }
   };
 
   const handleResultClick = () => {
-    setIsOpen(false);
+    close();
     setQuery("");
   };
 
@@ -95,7 +96,7 @@ export const HeaderSearch = () => {
             onChange={handleInputChange}
             onFocus={() => {
               if (query.trim().length >= SEARCH.MIN_CHARS && hasResults) {
-                setIsOpen(true);
+                open();
               }
             }}
             style={isLoading ? { paddingRight: "3rem" } : undefined}
