@@ -2,6 +2,7 @@
 "use client";
 
 import { Kit } from "@/libs/api";
+import { formatPrice } from "@/utils/formatters";
 import Image from "next/image";
 import Link from "next/link";
 import { AddKitToCartButton } from "./add-kit-to-cart-button";
@@ -82,15 +83,15 @@ export const KitItem = ({ data }: Props) => {
 
         <div className="mt-3 flex items-baseline gap-2">
           <span className="text-2xl font-bold text-blue-600">
-            R$ {data.price.toFixed(2)}
+            {formatPrice(data.price)}
           </span>
           <span className="text-sm text-gray-400 line-through">
-            R$ {data.originalPrice.toFixed(2)}
+            {formatPrice(data.originalPrice)}
           </span>
         </div>
 
         <div className="mt-2 text-sm text-green-600 font-medium">
-          Economia de R$ {savings.toFixed(2)}
+          Economia de {formatPrice(savings)}
         </div>
 
         <div className="mt-3 pt-3 border-t border-gray-100">

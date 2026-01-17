@@ -3,6 +3,7 @@
 
 import { KitCartItem, useCartStore } from "@/store/cart";
 import { setCartState } from "@/actions/set-cart-state";
+import { formatPrice } from "@/utils/formatters";
 import Link from "next/link";
 
 type Props = {
@@ -72,10 +73,10 @@ export const CartKitItem = ({ kit }: Props) => {
           {/* Preço unitário */}
           <div className="flex items-center gap-2 text-sm">
             <span className="text-gray-400 line-through">
-              R$ {kit.kitOriginalPrice.toFixed(2)}
+              {formatPrice(kit.kitOriginalPrice)}
             </span>
             <span className="font-semibold text-blue-600">
-              R$ {kit.kitPrice.toFixed(2)}
+              {formatPrice(kit.kitPrice)}
             </span>
             <span className="text-gray-400">/ unidade</span>
           </div>
@@ -107,15 +108,15 @@ export const CartKitItem = ({ kit }: Props) => {
           <div className="text-right">
             {kit.quantity > 1 && (
               <div className="text-gray-400 line-through text-sm">
-                R$ {totalOriginalPrice.toFixed(2)}
+                {formatPrice(totalOriginalPrice)}
               </div>
             )}
             <div className="text-xl font-bold text-blue-600">
-              R$ {totalPrice.toFixed(2)}
+              {formatPrice(totalPrice)}
             </div>
             {savings > 0 && (
               <div className="text-green-600 text-xs font-medium">
-                Economia: R$ {savings.toFixed(2)}
+                Economia: {formatPrice(savings)}
               </div>
             )}
           </div>

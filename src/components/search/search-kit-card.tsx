@@ -2,6 +2,7 @@
 "use client";
 
 import { SearchKit } from "@/actions/search";
+import { formatPrice } from "@/utils/formatters";
 import Image from "next/image";
 import Link from "next/link";
 import { AddKitToCartButton } from "@/components/kits/add-kit-to-cart-button";
@@ -71,10 +72,10 @@ export const SearchKitCard = ({ kit }: Props) => {
         </Link>
         <div className="mt-2 flex items-center gap-2">
           <span className="text-gray-400 line-through text-sm">
-            R$ {kit.originalPrice.toFixed(2)}
+            {formatPrice(kit.originalPrice)}
           </span>
           <span className="text-xl font-bold text-blue-600">
-            R$ {kit.price.toFixed(2)}
+            {formatPrice(kit.price)}
           </span>
         </div>
 

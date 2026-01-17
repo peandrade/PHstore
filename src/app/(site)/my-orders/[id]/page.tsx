@@ -1,5 +1,7 @@
 import { getOrderDetail } from "@/actions";
 import { getServerAuthToken } from "@/libs/server-cookies";
+import { formatDateTime, formatPrice } from "@/utils/formatters";
+import { getStatusColor, getStatusLabel } from "@/utils/order-helpers";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
@@ -23,50 +25,6 @@ export default async function OrderDetailPage({ params }: Props) {
   if (!order) {
     notFound();
   }
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case "paid":
-      case "completed":
-        return "bg-green-100 text-green-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "cancelled":
-        return "bg-red-100 text-red-800";
-      case "refunded":
-        return "bg-purple-100 text-purple-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case "paid":
-        return "Pago";
-      case "completed":
-        return "Concluído";
-      case "pending":
-        return "Pendente";
-      case "cancelled":
-        return "Cancelado";
-      case "refunded":
-        return "Reembolsado";
-      default:
-        return status || "Processando";
-    }
-  };
 
   const subtotal = order.products.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -109,7 +67,7 @@ export default async function OrderDetailPage({ params }: Props) {
           </span>
         </div>
         <p className="text-gray-500 mt-1">
-          Realizado em {formatDate(order.createdAt)}
+          Realizado em {formatDateTime(order.createdAt)}
         </p>
       </div>
 
@@ -200,12 +158,12 @@ export default async function OrderDetailPage({ params }: Props) {
                   Quantidade: {product.quantity}
                 </p>
                 <p className="text-sm text-gray-500">
-                  R$ {product.price.toFixed(2)} cada
+                  {formatPrice(product.price)} cada
                 </p>
               </div>
               <div className="text-right">
                 <p className="font-semibold text-gray-900">
-                  R$ {(product.price * product.quantity).toFixed(2)}
+                  {formatPrice(product.price * product.quantity)}
                 </p>
               </div>
             </div>
@@ -219,11 +177,11 @@ export default async function OrderDetailPage({ params }: Props) {
         <div className="space-y-3">
           <div className="flex justify-between text-gray-600">
             <span>Subtotal</span>
-            <span>R$ {subtotal.toFixed(2)}</span>
+            <span>{formatPrice(subtotal)}</span>
           </div>
           <div className="flex justify-between text-gray-600">
             <span>Frete</span>
-            <span>R$ {order.shippingCost.toFixed(2)}</span>
+            <span>{formatPrice(order.shippingCost)}</span>
           </div>
           <div className="flex justify-between font-bold text-lg text-gray-900 pt-3 border-t border-gray-200">
             <span>Total</span>
@@ -234,13 +192,13 @@ export default async function OrderDetailPage({ params }: Props) {
                   : "text-blue-600"
               }
             >
-              R$ {order.total.toFixed(2)}
+              {formatPrice(order.total)}
             </span>
           </div>
           {order.status === "refunded" && (
             <div className="flex justify-between text-sm text-purple-600">
               <span>Valor reembolsado</span>
-              <span>R$ {order.total.toFixed(2)}</span>
+              <span>{formatPrice(order.total)}</span>
             </div>
           )}
         </div>

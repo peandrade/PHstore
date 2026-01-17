@@ -1,6 +1,8 @@
 "use client";
 
 import { OrderData } from "@/actions/get-order-by-session";
+import { formatPrice } from "@/utils/formatters";
+import { getStatusColor, getStatusLabel } from "@/utils/order-helpers";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -27,39 +29,6 @@ export const OrderSuccessContent = ({ order }: Props) => {
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
-
-  const getStatusColor = (status?: string) => {
-    if (!status) return "bg-gray-100 text-gray-800";
-    
-    switch (status.toLowerCase()) {
-      case "paid":
-      case "completed":
-        return "bg-green-100 text-green-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "cancelled":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getStatusLabel = (status?: string) => {
-    if (!status) return "Processando";
-    
-    switch (status.toLowerCase()) {
-      case "paid":
-        return "Pago";
-      case "completed":
-        return "Concluído";
-      case "pending":
-        return "Pendente";
-      case "cancelled":
-        return "Cancelado";
-      default:
-        return status;
-    }
   };
 
   return (
@@ -149,11 +118,11 @@ export const OrderSuccessContent = ({ order }: Props) => {
                 </div>
                 <div className="text-right">
                   <p className="font-medium text-gray-900">
-                    R$ {(product.price * product.quantity).toFixed(2)}
+                    {formatPrice(product.price * product.quantity)}
                   </p>
                   {product.quantity > 1 && (
                     <p className="text-sm text-gray-500">
-                      R$ {product.price.toFixed(2)} cada
+                      {formatPrice(product.price)} cada
                     </p>
                   )}
                 </div>
@@ -167,16 +136,16 @@ export const OrderSuccessContent = ({ order }: Props) => {
           <div className="space-y-2">
             <div className="flex justify-between text-gray-600">
               <span>Subtotal</span>
-              <span>R$ {order.subtotal?.toFixed(2) || "0.00"}</span>
+              <span>{formatPrice(order.subtotal || 0)}</span>
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Frete</span>
-              <span>R$ {order.shippingCost?.toFixed(2) || "0.00"}</span>
+              <span>{formatPrice(order.shippingCost || 0)}</span>
             </div>
             <div className="flex justify-between font-bold text-lg text-gray-900 pt-2 border-t border-gray-200">
               <span>Total</span>
               <span className="text-blue-600">
-                R$ {order.total?.toFixed(2) || "0.00"}
+                {formatPrice(order.total || 0)}
               </span>
             </div>
           </div>

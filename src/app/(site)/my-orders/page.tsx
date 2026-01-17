@@ -1,6 +1,6 @@
 import { getUserOrders } from "@/actions";
 import { getServerAuthToken } from "@/libs/server-cookies";
-import { formatDate } from "@/utils/formatters";
+import { formatDate, formatPrice } from "@/utils/formatters";
 import { getStatusColor, getStatusLabel } from "@/utils/order-helpers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -67,7 +67,7 @@ export default async function MyOrdersPage() {
                           : "text-gray-900"
                       }`}
                     >
-                      R$ {order.total.toFixed(2)}
+                      {formatPrice(order.total)}
                     </p>
                   </div>
 

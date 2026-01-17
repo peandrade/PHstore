@@ -1,5 +1,6 @@
 "use client";
 
+import { formatPrice } from "@/utils/formatters";
 import { useAuthStore } from "@/store/auth";
 import { useCartStore } from "@/store/cart";
 import { ShippingBoxNotLogged } from "./shipping-box-not-logged";
@@ -25,7 +26,7 @@ export const ShippingBox = () => {
             Receba em até {cartStore.shippingDays} dias úteis.
           </div>
           <div className="text-green-600 font-bold">
-            R$ {cartStore.shippingCost.toFixed(2)}
+            {formatPrice(cartStore.shippingCost)}
           </div>
         </div>
       )}

@@ -1,6 +1,7 @@
 "use server";
 
 import { API_URL } from "@/config/api";
+import { authenticatedFetch } from "@/libs/authenticated-fetch";
 import { getServerAuthToken } from "@/libs/server-cookies";
 
 export type OrderProduct = {
@@ -58,12 +59,21 @@ type OrderResponse = {
   orderItems: OrderItemResponse[];
 };
 
+type ApiOrderResponse = {
+  order: OrderResponse;
+};
+
+type SessionResponse = {
+  orderId: number;
+};
+
 export const getOrderBySessionId = async (
   sessionId: string
 ): Promise<OrderData | null> => {
   if (!sessionId) return null;
 
   try {
+    // 1. Busca o orderId pela session_id (endpoint público)
     const sessionResponse = await fetch(
       `${API_URL}/orders/session?session_id=${sessionId}`,
       {
@@ -80,8 +90,8 @@ export const getOrderBySessionId = async (
       return null;
     }
 
-    const sessionData = await sessionResponse.json();
-    const orderId = sessionData.orderId as number;
+    const sessionData = await sessionResponse.json() as SessionResponse;
+    const orderId = sessionData.orderId;
 
     if (!orderId) {
       console.error("orderId não encontrado na resposta");
@@ -99,18 +109,14 @@ export const getOrderBySessionId = async (
       };
     }
 
-    // 3. Busca os detalhes do pedido
-    const orderResponse = await fetch(`${API_URL}/orders/${orderId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    // 2. Busca os detalhes do pedido (autenticado)
+    const result = await authenticatedFetch<ApiOrderResponse>(`/orders/${orderId}`, {
+      token,
       cache: "no-store",
     });
 
-    if (!orderResponse.ok) {
-      console.error("Erro ao buscar detalhes do pedido:", orderResponse.status);
+    if (!result.success) {
+      console.error("Erro ao buscar detalhes do pedido:", result.error);
       return {
         id: orderId,
         createdAt: new Date().toISOString(),
@@ -118,8 +124,7 @@ export const getOrderBySessionId = async (
       };
     }
 
-    const orderData = await orderResponse.json();
-    const order = orderData.order as OrderResponse;
+    const order = result.data.order;
 
     const subtotal = order.orderItems?.reduce(
       (sum: number, item: OrderItemResponse) => sum + item.price * item.quantity,

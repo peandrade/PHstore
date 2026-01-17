@@ -4,6 +4,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { TIMING, SEARCH } from "@/config/constants";
+import { formatPrice } from "@/utils/formatters";
 import Image from "next/image";
 import Link from "next/link";
 import { searchProducts, SearchProduct, SearchKit } from "@/actions/search";
@@ -177,7 +178,7 @@ export const HeaderSearch = () => {
                           {product.label}
                         </p>
                         <p className="text-sm text-blue-600 font-semibold">
-                          R$ {product.price.toFixed(2)}
+                          {formatPrice(product.price)}
                         </p>
                       </div>
                     </Link>
@@ -226,10 +227,10 @@ export const HeaderSearch = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-gray-400 line-through">
-                            R$ {kit.originalPrice.toFixed(2)}
+                            {formatPrice(kit.originalPrice)}
                           </span>
                           <span className="text-sm text-blue-600 font-semibold">
-                            R$ {kit.price.toFixed(2)}
+                            {formatPrice(kit.price)}
                           </span>
                         </div>
                       </div>

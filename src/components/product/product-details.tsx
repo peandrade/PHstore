@@ -4,6 +4,7 @@
 import { setCartState } from "@/actions/set-cart-state";
 import { useCartStore } from "@/store/cart";
 import { ProductComplete } from "@/types/product";
+import { formatPrice } from "@/utils/formatters";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -35,7 +36,7 @@ export const ProductDetails = ({ product }: Props) => {
       <div className="text-xs text-gray-500 mb-2">Cod {product.id}</div>
       <div className="font-bold text-3xl mb-6">{product.label}</div>
       <div className="font-bold text-4xl text-blue-600 mb-2">
-        R$ {product.price.toFixed(2)}
+        {formatPrice(product.price)}
       </div>
       <div className="text-sm text-gray-500 mb-6">Em até 12x no cartão</div>
       <div className="flex gap-4">
