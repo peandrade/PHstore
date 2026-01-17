@@ -2,6 +2,7 @@
 "use client";
 
 import { CartListItem } from "@/types/cart-list-item";
+import { formatPrice } from "@/utils/formatters";
 import Image from "next/image";
 import Link from "next/link";
 import { useCartStore } from "@/store/cart";
@@ -98,7 +99,7 @@ export const CartProductItem = ({ item }: Props) => {
           {/* Preço unitário */}
           <div className="flex items-center gap-2 text-sm">
             <span className="font-semibold text-blue-600">
-              R$ {item.product.price.toFixed(2)}
+              {formatPrice(item.product.price)}
             </span>
             <span className="text-gray-400">/ unidade</span>
           </div>
@@ -130,7 +131,7 @@ export const CartProductItem = ({ item }: Props) => {
           {/* Preço total */}
           <div className="text-right">
             <div className="text-xl font-bold text-blue-600">
-              R$ {totalPrice.toFixed(2)}
+              {formatPrice(totalPrice)}
             </div>
           </div>
 

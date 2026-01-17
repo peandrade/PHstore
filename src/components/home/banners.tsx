@@ -1,6 +1,7 @@
 "use client";
 
 import { Banner } from "@/types/banner";
+import { TIMING } from "@/config/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -29,7 +30,7 @@ export const Banners = ({ list }: Props) => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
-    timerRef.current = setInterval(nextImage, 4000);
+    timerRef.current = setInterval(nextImage, TIMING.BANNER_ROTATION_INTERVAL);
   }, [nextImage]);
 
   const handleBannerClick = (index: number) => {

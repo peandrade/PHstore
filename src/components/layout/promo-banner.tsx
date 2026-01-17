@@ -1,5 +1,6 @@
 "use client";
 
+import { TIMING } from "@/config/constants";
 import { useState, useEffect, useCallback } from "react";
 
 type PromoMessage = {
@@ -78,7 +79,7 @@ export function PromoBanner() {
     setTimeout(() => {
       setCurrentIndex((prev) => (prev + 1) % promoMessages.length);
       setIsAnimating(false);
-    }, 300);
+    }, TIMING.PROMO_BANNER_ANIMATION);
   }, []);
 
   const goToMessage = (index: number) => {
@@ -87,13 +88,13 @@ export function PromoBanner() {
     setTimeout(() => {
       setCurrentIndex(index);
       setIsAnimating(false);
-    }, 300);
+    }, TIMING.PROMO_BANNER_ANIMATION);
   };
 
   useEffect(() => {
     if (isPaused) return;
 
-    const interval = setInterval(nextMessage, 4000);
+    const interval = setInterval(nextMessage, TIMING.PROMO_BANNER_ROTATION);
     return () => clearInterval(interval);
   }, [isPaused, nextMessage]);
 

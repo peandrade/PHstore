@@ -2,6 +2,7 @@
 "use client";
 
 import { Product } from "@/types/product";
+import { formatPrice } from "@/utils/formatters";
 import Image from "next/image";
 import Link from "next/link";
 import { LikeButton } from "./product/like-button";
@@ -50,7 +51,7 @@ export const ProductItem = ({ data, showCartButton = true }: Props) => {
         </Link>
 
         <div className="mt-2 text-xl font-bold text-blue-600">
-          R$ {data.price.toFixed(2)}
+          {formatPrice(data.price)}
         </div>
 
         <div className="mt-1 text-xs text-gray-400">Em até 12x no cartão</div>

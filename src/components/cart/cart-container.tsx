@@ -3,6 +3,7 @@
 
 import { useCartStore, KitCartItem } from "@/store/cart";
 import { CartListItem } from "@/types/cart-list-item";
+import { formatPrice } from "@/utils/formatters";
 import Image from "next/image";
 import { useEffect, useMemo } from "react";
 import { CartProductList } from "./cart-product-list";
@@ -120,18 +121,18 @@ export const CartContainer = ({
             <div className="border-b border-gray-200 p-6">
               <div className="flex justify-between items-center mb-5">
                 <div>Subtotal</div>
-                <div className="font-bold">R$ {subtotal.toFixed(2)}</div>
+                <div className="font-bold">{formatPrice(subtotal)}</div>
               </div>
               <div className="flex justify-between items-center">
                 <div>Frete</div>
-                <div className="font-bold">R$ {shippingCost.toFixed(2)}</div>
+                <div className="font-bold">{formatPrice(shippingCost)}</div>
               </div>
             </div>
             <div className="p-6">
               <div className="flex justify-between items-center mb-3">
                 <div>Total</div>
                 <div className="font-bold text-2xl text-blue-600">
-                  R$ {total.toFixed(2)}
+                  {formatPrice(total)}
                 </div>
               </div>
               <div className="text-right text-xs text-gray-500 mb-5">

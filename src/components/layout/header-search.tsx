@@ -3,6 +3,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { TIMING, SEARCH } from "@/config/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { searchProducts, SearchProduct, SearchKit } from "@/actions/search";
@@ -36,7 +37,7 @@ export const HeaderSearch = () => {
 
   // Debounced search
   const handleSearch = useCallback(async (searchQuery: string) => {
-    if (searchQuery.trim().length < 2) {
+    if (searchQuery.trim().length < SEARCH.MIN_CHARS) {
       setProducts([]);
       setKits([]);
       setIsOpen(false);
@@ -47,7 +48,7 @@ export const HeaderSearch = () => {
     setIsOpen(true);
 
     try {
-      const result = await searchProducts(searchQuery, 5);
+      const result = await searchProducts(searchQuery, SEARCH.RESULT_LIMIT);
       setProducts(result.products);
       setKits(result.kits);
     } catch (error) {
@@ -68,12 +69,12 @@ export const HeaderSearch = () => {
 
     debounceRef.current = setTimeout(() => {
       handleSearch(value);
-    }, 300);
+    }, TIMING.SEARCH_DEBOUNCE);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim().length >= 2) {
+    if (query.trim().length >= SEARCH.MIN_CHARS) {
       setIsOpen(false);
       router.push(`/search?q=${encodeURIComponent(query)}`);
     }
@@ -96,7 +97,7 @@ export const HeaderSearch = () => {
             value={query}
             onChange={handleInputChange}
             onFocus={() => {
-              if (query.trim().length >= 2 && hasResults) {
+              if (query.trim().length >= SEARCH.MIN_CHARS && hasResults) {
                 setIsOpen(true);
               }
             }}
@@ -132,7 +133,7 @@ export const HeaderSearch = () => {
             <div className="p-4 text-center text-gray-500">Buscando...</div>
           )}
 
-          {!isLoading && !hasResults && query.trim().length >= 2 && (
+          {!isLoading && !hasResults && query.trim().length >= SEARCH.MIN_CHARS && (
             <div className="p-4 text-center text-gray-500">
               <p className="mb-2">Nenhum resultado encontrado para &quot;{query}&quot;</p>
               <p className="text-sm">Tente buscar por outro termo</p>
