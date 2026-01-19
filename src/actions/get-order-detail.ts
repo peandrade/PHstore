@@ -63,10 +63,7 @@ type ApiOrderResponse = {
 export const getOrderDetail = async (
   orderId: number
 ): Promise<OrderDetail | null> => {
-  const result = await authenticatedFetch<ApiOrderResponse>(`/orders/${orderId}`, {
-    requireAuth: true,
-    cache: "no-store",
-  });
+  const result = await authenticatedFetch<ApiOrderResponse>(`/orders/${orderId}`);
 
   if (!result.success) {
     console.error("Erro ao buscar pedido:", result.error);

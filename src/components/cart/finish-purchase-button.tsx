@@ -27,7 +27,6 @@ export const FinishPurchaseButton = () => {
 
     try {
       const response = await finishCart(
-        token as string,
         cartStore.selectedAddressId,
         cartStore.cart,
         cartStore.kits

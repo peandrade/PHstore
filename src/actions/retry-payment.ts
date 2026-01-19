@@ -11,7 +11,6 @@ export const retryPayment = async (orderId: number) => {
     `/orders/${orderId}/retry-payment`,
     {
       method: "POST",
-      requireAuth: true,
     }
   );
 

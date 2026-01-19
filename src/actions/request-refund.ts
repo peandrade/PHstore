@@ -11,7 +11,6 @@ export const requestRefund = async (orderId: number) => {
     `/orders/${orderId}/refund`,
     {
       method: "POST",
-      requireAuth: true,
     }
   );
 
