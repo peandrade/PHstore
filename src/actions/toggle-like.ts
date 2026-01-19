@@ -19,7 +19,6 @@ export const toggleLike = async (
     `/products/${productId}/like`,
     {
       method: "POST",
-      requireAuth: true,
     }
   );
 

@@ -14,7 +14,7 @@ import {
 import { z } from "zod";
 
 const schema = z.object({
-  email: z.email({ message: "E-mail inválido" }),
+  email: z.string().email({ message: "E-mail inválido" }),
   password: z.string().min(10, { message: "Senha deve ter pelo menos 10 caracteres" }),
 });
 

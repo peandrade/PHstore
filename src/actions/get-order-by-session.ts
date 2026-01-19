@@ -2,7 +2,6 @@
 
 import { API_URL } from "@/config/api";
 import { authenticatedFetch } from "@/libs/authenticated-fetch";
-import { getServerAuthToken } from "@/libs/server-cookies";
 
 export type OrderProduct = {
   id: number;
@@ -97,21 +96,7 @@ export const getOrderBySessionId = async (
       return null;
     }
 
-    const token = await getServerAuthToken();
-
-    if (!token) {
-      console.error("Token não encontrado");
-      return {
-        id: orderId,
-        createdAt: new Date().toISOString(),
-        status: "pending",
-      };
-    }
-
-    const result = await authenticatedFetch<ApiOrderResponse>(`/orders/${orderId}`, {
-      token,
-      cache: "no-store",
-    });
+    const result = await authenticatedFetch<ApiOrderResponse>(`/orders/${orderId}`);
 
     if (!result.success) {
       console.error("Erro ao buscar detalhes do pedido:", result.error);

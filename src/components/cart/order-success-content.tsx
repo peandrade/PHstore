@@ -70,10 +70,10 @@ export const OrderSuccessContent = ({ order }: Props) => {
               <p>
                 <span
                   className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                    order.status
+                    order.status ?? "pending"
                   )}`}
                 >
-                  {getStatusLabel(order.status)}
+                  {getStatusLabel(order.status ?? "pending")}
                 </span>
               </p>
             </div>
