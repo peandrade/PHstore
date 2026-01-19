@@ -17,15 +17,10 @@ type ApiFinishCartResponse = {
 };
 
 export const finishCart = async (
-  token: string,
   addressId: number,
   cart: CartItem[],
   kits: KitCartItem[] = []
 ): Promise<FinishCartResponse> => {
-  if (!token) {
-    return { success: false, error: "Usuário não autenticado" };
-  }
-
   if (!addressId) {
     return { success: false, error: "Selecione um endereço de entrega" };
   }
@@ -68,7 +63,6 @@ export const finishCart = async (
       addressId,
       cart: allCartItems,
     },
-    token,
   });
 
   if (!result.success) {

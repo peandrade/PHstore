@@ -15,17 +15,11 @@ type ApiAddAddressResponse = {
 };
 
 export const addUserAddress = async (
-  token: string,
   address: Omit<Address, "id">
 ): Promise<AddAddressResponse> => {
-  if (!token) {
-    return { success: false, error: "Usuário não autenticado" };
-  }
-
   const result = await authenticatedFetch<ApiAddAddressResponse>("/user/addresses", {
     method: "POST",
     body: address,
-    token,
   });
 
   if (!result.success) {

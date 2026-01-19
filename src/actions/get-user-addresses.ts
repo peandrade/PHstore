@@ -7,13 +7,8 @@ type AddressesResponse = {
   addresses: Address[];
 };
 
-export const getUserAddresses = async (token: string): Promise<Address[]> => {
-  if (!token || typeof token !== "string" || token.length === 0) {
-    return [];
-  }
-
+export const getUserAddresses = async (): Promise<Address[]> => {
   const result = await authenticatedFetch<AddressesResponse>("/user/addresses", {
-    token,
     fallbackValue: { addresses: [] },
   });
 

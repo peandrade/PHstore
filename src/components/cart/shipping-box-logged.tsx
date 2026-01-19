@@ -17,7 +17,7 @@ export const ShippingBoxLogged = () => {
 
   const loadAddresses = async () => {
     if (token && typeof token === "string") {
-      const addressList = await getUserAddresses(token);
+      const addressList = await getUserAddresses();
       setAddresses(addressList);
     }
   };
@@ -62,7 +62,7 @@ export const ShippingBoxLogged = () => {
     if (!token || typeof token !== "string") return;
 
     setError(null);
-    const response = await addUserAddress(token, address);
+    const response = await addUserAddress(address);
 
     if (response.success) {
       await loadAddresses();
