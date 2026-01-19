@@ -1,7 +1,10 @@
-"use server"
+"use server";
 
-import { clearServerAuthToken } from "@/libs/server-cookies"
+import { cookies } from "next/headers";
 
 export const clearAuthCookie = async () => {
-    await clearServerAuthToken();
-}
+  const cookieStore = await cookies();
+  
+  cookieStore.delete("token");
+  cookieStore.delete("refreshToken");
+};

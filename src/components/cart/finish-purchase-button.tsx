@@ -15,26 +15,35 @@ export const FinishPurchaseButton = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const isLoggedIn = typeof token === "string" && token.length > 0;
+
+  const hasItems = cartStore.cart.length > 0 || cartStore.kits.length > 0;
+
   const handleFinishButton = async () => {
-    if (!token || !cartStore.selectedAddressId) return;
+    if (!isLoggedIn || !cartStore.selectedAddressId) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
-      const sessionUrl = await finishCart(
-        token,
+      const response = await finishCart(
+        token as string,
         cartStore.selectedAddressId,
-        cartStore.cart
+        cartStore.cart,
+        cartStore.kits
       );
-      if (sessionUrl) {
+
+      if (response.success && response.checkoutUrl) {
         await clearCartCookie();
         cartStore.clearCart();
-        router.push(sessionUrl);
+        router.push(response.checkoutUrl);
       } else {
-        setError("Ocorreu um erro ao finalizar a compra. Tente novamente.");
+        setError(
+          response.error || "Ocorreu um erro ao finalizar a compra. Tente novamente."
+        );
       }
     } catch (err) {
+      console.error("Erro ao finalizar:", err);
       setError("Ocorreu um erro ao finalizar a compra. Tente novamente.");
     } finally {
       setIsLoading(false);
@@ -43,7 +52,7 @@ export const FinishPurchaseButton = () => {
 
   if (!hydrated) return null;
 
-  if (!token) {
+  if (!isLoggedIn) {
     return (
       <Link
         href={"/login"}
@@ -62,7 +71,7 @@ export const FinishPurchaseButton = () => {
         </div>
       )}
       <button
-        disabled={!cartStore.selectedAddressId || isLoading}
+        disabled={!cartStore.selectedAddressId || isLoading || !hasItems}
         onClick={handleFinishButton}
         className="w-full text-center px-6 py-5 bg-blue-600 text-white border-0 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
       >

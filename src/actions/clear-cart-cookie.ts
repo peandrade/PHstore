@@ -1,7 +1,7 @@
-"use server"
+"use server";
 
-import { clearServerCart } from "@/libs/server-cookies"
+import { clearServerCart } from "@/libs/server-cookies";
 
 export const clearCartCookie = async () => {
-    await clearServerCart();
-}
+  await clearServerCart();
+};

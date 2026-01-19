@@ -1,77 +1,71 @@
 "use client";
 
 import { Product } from "@/types/product";
+import { formatPrice } from "@/utils/formatters";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { LikeButton } from "./product/like-button";
+import { AddProductToCartButton } from "./product/add-product-to-cart-button";
 
 type Props = {
   data: Product;
+  showCartButton?: boolean;
 };
 
-export const ProductItem = ({ data }: Props) => {
+export const ProductItem = ({ data, showCartButton = true }: Props) => {
   const link = `/product/${data.id}`;
-  const [liked, setLiked] = useState(data.liked);
-
-  const toggleLiked = () => {
-    setLiked(!liked);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      toggleLiked();
-    }
-  };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-sm p-6 hover:shadow-lg transition-shadow">
-      <div className="flex justify-end">
-        <div
-          onClick={toggleLiked}
-          onKeyDown={handleKeyDown}
-          role="button"
-          tabIndex={0}
-          aria-label={liked ? "Remove from favorites" : "Add to favorites"}
-          aria-pressed={liked}
-          className="cursor-pointer size-12 border border-gray-200 rounded-sm flex justify-center items-center hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {liked && (
+    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow group">
+      <div className="relative bg-gray-50 aspect-square">
+        <Link href={link}>
+          {data.image ? (
             <Image
-              src={"/assets/ui/heart-3-fill.png"}
-              alt="Favorited"
-              width={24}
-              height={24}
+              src={data.image}
+              alt={data.label}
+              fill
+              className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 768px) 50vw, 25vw"
             />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-gray-400 text-4xl">
+              📦
+            </div>
           )}
-          {!liked && (
-            <Image
-              src={"/assets/ui/heart-3-line.png"}
-              alt="Not favorited"
-              width={24}
-              height={24}
-            />
-          )}
+        </Link>
+        <div className="absolute top-3 right-3">
+          <LikeButton
+            productId={data.id}
+            initialLiked={data.liked}
+            size="sm"
+          />
         </div>
       </div>
-      <div className="flex justify-center">
-        <Link href={link} className="hover:opacity-80 transition-opacity">
-          <Image
-            src={data.image}
-            alt={`Product image of ${data.label}`}
-            width={200}
-            height={200}
-            className="max-w-full h-48"
-          />
+      <div className="p-4">
+        <Link
+          href={link}
+          className="block text-sm font-semibold text-gray-800 hover:text-blue-600 transition-colors line-clamp-2 min-h-10"
+        >
+          {data.label}
         </Link>
+
+        <div className="mt-2 text-xl font-bold text-blue-600">
+          {formatPrice(data.price)}
+        </div>
+
+        <div className="mt-1 text-xs text-gray-400">Em até 12x no cartão</div>
+
+        {showCartButton && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <AddProductToCartButton
+              productId={data.id}
+              productLabel={data.label}
+              className="w-full py-2 px-4 text-sm"
+              showIcon
+            />
+          </div>
+        )}
       </div>
-      <div className="mt-9 text-lg font-bold hover:text-blue-600 transition-colors">
-        <Link href={link}>{data.label}</Link>
-      </div>
-      <div className="text-2xl font-bold text-blue-600">
-        R$ {data.price.toFixed(2)}
-      </div>
-      <div className="mt-5 text-gray-400">Em até 12x no cartão</div>
     </div>
   );
 };
