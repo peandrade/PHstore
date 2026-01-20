@@ -5,11 +5,9 @@ import { finishCart } from "@/actions/finish-cart";
 import { useAuthStore } from "@/store/auth";
 import { useCartStore } from "@/store/cart";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export const FinishPurchaseButton = () => {
-  const router = useRouter();
   const { token, hydrated } = useAuthStore((state) => state);
   const cartStore = useCartStore((state) => state);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,7 +33,7 @@ export const FinishPurchaseButton = () => {
       if (response.success && response.checkoutUrl) {
         await clearCartCookie();
         cartStore.clearCart();
-        router.push(response.checkoutUrl);
+        window.location.href = response.checkoutUrl;
       } else {
         setError(
           response.error || "Ocorreu um erro ao finalizar a compra. Tente novamente."
